@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Barang_Asal_Controller;
 use App\Http\Controllers\PeminjamanBarangController;
 use App\Http\Controllers\Barang;
 use App\Http\Controllers\JenisBarangController;
@@ -15,3 +16,5 @@ Route::get('/barang_inventaris', [Barang::class, 'index']);
 Route::post('/barang_inventaris', [Barang::class, 'store']);
 Route::get('/jenis_barang', [JenisBarangController::class, 'index']);
 Route::post('/jenis_barang', [JenisBarangController::class, 'store']);
+Route::get('/asalBarang', [Barang_Asal_Controller::class, 'index']);
+Route::post('/asalBarang', [Barang_Asal_Controller::class, 'store']);

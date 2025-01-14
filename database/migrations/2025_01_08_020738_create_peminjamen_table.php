@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('pb_no_siswa', 20)->nullable();
             $table->string('pb_nama_siswa', 100)->nullable();
             $table->dateTime('pb_harus_kembali_tgl');
-            $table->string('pb_stat', 2);
+            $table->enum('pb_stat', ['0','1']);
 
             $table->foreign('user_id')->references('user_id')->on('penggunas');
         });

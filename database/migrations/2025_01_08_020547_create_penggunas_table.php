@@ -15,8 +15,8 @@ return new class extends Migration
             $table->string('user_id',10)->primary();
             $table->string('user_nama',50)->nullable();
             $table->string('user_pass', 32)->nullable();
-            $table->string('user_hak', 2)->nullable();
-            $table->string('user_sts', 2)->nullable();
+            $table->string('role', 30)->nullable();
+            $table->enum('user_sts', ['0','1'])->nullable();
             
         });
     }

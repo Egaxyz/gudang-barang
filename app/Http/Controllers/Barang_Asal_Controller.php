@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\asalBarang;
 use Carbon\Carbon;
-use App\Models\barang_inventaris;
+use Illuminate\Http\Request;
 
-class Barang extends Controller
+class Barang_Asal_Controller extends Controller
 {
     /**
      * Menyimpan data barang inventaris baru.
@@ -18,33 +18,31 @@ class Barang extends Controller
         $tahun = Carbon::now()->format('Y');
 
         // Dapatkan nomor urut terakhir berdasarkan tahun dari kolom br_tgl_entry
-        $lastItem = barang_inventaris::whereYear('br_tgl_entry', $tahun)
-            ->orderBy('br_kode', 'desc')
+        $lastItem = asalBarang::whereYear('tgl_kirim', $tahun)
+            ->orderBy('id_asal_br', 'desc')
             ->first();
 
-        $lastNoUrut = $lastItem ? intval(substr($lastItem->br_kode, -3)) : 0;
+        $lastNoUrut = $lastItem ? intval(substr($lastItem->id_asal_br, -3)) : 0;
         $newNoUrut = str_pad($lastNoUrut + 1, 3, '0', STR_PAD_LEFT);
 
         // Buat kode barang baru
-        $kodeBarangBaru = "INV" . $tahun . $newNoUrut;
+        $kodeBarangBaru = "FR" . $tahun . $newNoUrut;
 
 
         
         // Simpan data baru
-        $barang = new barang_inventaris();
-        $barang->br_kode = $kodeBarangBaru;
-        $barang->id_asal_br = $request->id_asal_br;
-        $barang->jns_brg_kode = $request->jns_brg_kode;
-        $barang->user_id = $request->user_id;
-        $barang->br_tgl_terima = $request->br_tgl_terima;
-        $barang->br_tgl_entry = now();
-        $barang->br_status = $request->br_status;
-        $barang->save();
+        $asalbarang = new asalBarang();
+        $asalbarang->id_asal_br = $kodeBarangBaru;
+        $asalbarang->nama_perusahaan = $request->nama_perusahaan;
+        $asalbarang->jumlah_kirim = $request->jumlah_kirim;
+        $asalbarang->tgl_kirim = now();
+
+        $asalbarang->save();
 
         return response()->json([
             'success' => true,
             'message' => 'Data berhasil disimpan',
-            'data' => $barang
+            'data' => $asalbarang
         ]);
     }
 
@@ -57,8 +55,8 @@ class Barang extends Controller
         $tahun = $request->input('tahun', Carbon::now()->format('Y'));
 
         // Ambil data berdasarkan tahun dari kolom br_tgl_entry
-        $data = barang_inventaris::whereYear('br_tgl_entry', $tahun)
-            ->orderBy('br_kode', 'asc')
+        $data = asalBarang::whereYear('tgl_kirim', $tahun)
+            ->orderBy('id_asal_br', 'asc')
             ->get();
 
         return response()->json([
