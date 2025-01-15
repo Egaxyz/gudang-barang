@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('peminjaman_barang', function (Blueprint $table) {
             $table->string('pbd_id', 20)->primary();
-            $table->string('pb_id', 20)->nullable();
-            $table->string('br_kode', 12)->nullable();
-            $table->dateTime('pdb_tgl')->nullable();
-            $table->enum('pdb_sts', ['dipinjam', 'tersedia'])->nullable();
+            $table->string('pb_id', 20);
+            $table->string('br_kode', 12);
+            $table->dateTime('pdb_tgl');
+            $table->enum('pdb_sts', ['dipinjam', 'tersedia']);
 
            $table->foreign('br_kode')->references('br_kode')->on('barang_inventaris');
             $table->foreign('pb_id')->references('pb_id')->on('peminjaman');

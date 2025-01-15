@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('pengembalian', function (Blueprint $table) {
             $table->string('kembali_id', 20)->primary();
-            $table->string('pb_id', 20)->nullable();
-            $table->string('user_id',10)->nullable();
-            $table->dateTime('kembali_tgl')->nullable();
-            $table->enum('kembali_sts', ['0','1'])->nullable();
+            $table->string('pb_id', 20);
+            $table->integer('user_id');
+            $table->dateTime('kembali_tgl');
+            $table->enum('kembali_sts', ['0','1']);
 
             $table->foreign('pb_id')->references('pb_id')->on('peminjaman');
             $table->foreign('user_id')->references('user_id')->on('penggunas');

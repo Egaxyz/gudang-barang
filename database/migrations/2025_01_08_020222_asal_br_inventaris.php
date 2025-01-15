@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('asal_barang', function (Blueprint $table) {
             $table->string('id_asal_br',10)->primary();
-            $table->string('nama_perusahaan', 20)->nullable();
-            $table->string('jumlah_kirim', 10)->nullable();
+            $table->string('nama_perusahaan', 20);
+            $table->string('jumlah_kirim', 10);
             $table->dateTime('tgl_kirim');
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('asal_barang');
     }
 };

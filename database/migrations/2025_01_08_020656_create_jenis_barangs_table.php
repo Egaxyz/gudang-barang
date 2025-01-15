@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('jenis_barang', function (Blueprint $table) {
             $table->string('jns_brg_kode', 5)->primary();
-            $table->string('jns_barang_nama', 50)->nullable();
+            $table->string('jns_barang_nama', 50);
         });
     }
 
