@@ -11,9 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('jenis_barang', function (Blueprint $table) {
-            $table->integer('jns_brg_kode', 5)->autoIncrement()->primary();
-            $table->string('jns_barang_nama', 50);
+        Schema::create('jurusan', function (Blueprint $table) {
+            $table->integer('jurusan_id')->autoIncrement()->primary();
+            $table->string('jurusan');
         });
     }
 
@@ -22,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('jenis_barang');
+        Schema::dropIfExists('jurusan');
     }
 };

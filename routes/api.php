@@ -1,10 +1,14 @@
 <?php
 
 use App\Http\Controllers\Barang_Asal_Controller;
+use App\Http\Controllers\JurusanController;
+use App\Http\Controllers\KelasController;
+use App\Http\Controllers\KonsentrasiController;
 use App\Http\Controllers\PeminjamanBarangController;
 use App\Http\Controllers\Barang;
 use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\PeminjamanCotroller;
+use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 //
@@ -26,3 +30,16 @@ Route::post('/asalBarang', [Barang_Asal_Controller::class, 'store']);
 
 Route::get('/pengguna', [UserController::class, 'index']);
 Route::post('/pengguna', [UserController::class, 'store']);
+
+Route::get('/jurusan', [JurusanController::class, 'index']);
+Route::post('/jurusan', [JurusanController::class, 'store']);
+Route::delete('/jurusan/{id}', [JurusanController::class, 'destroy']);
+
+Route::get('/konsentrasi', [KonsentrasiController::class, 'index']);
+Route::post('/konsentrasi', [KonsentrasiController::class, 'store']);
+
+Route::get('/kelas', [KelasController::class, 'index']);
+Route::post('/kelas', [KelasController::class, 'store']);
+
+Route::get('/siswa', [SiswaController::class, 'index']);
+Route::post('/siswa', [SiswaController::class, 'store']);

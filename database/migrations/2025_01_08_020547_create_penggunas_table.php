@@ -1,134 +1,35 @@
 <?php
 
-namespace App\Http\Controllers;
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-use Illuminate\Http\Request;
-use App\Models\Pengguna; // Pastikan model sudah ada dan sesuai dengan nama tabel 'penggunas'
-
-class UserController extends Controller
+return new class extends Migration
 {
     /**
-     * Menampilkan daftar pengguna.
+     * Run the migrations.
      */
-    public function index()
+    public function up(): void
     {
-        // Mengambil semua data pengguna dari tabel penggunas
-        $users = Pengguna::all();
+        Schema::create('siswa', function (Blueprint $table) {
+    $table->integer('siswa_id')->autoIncrement()->primary();
+    $table->integer('kelas_id');
+    $table->integer('jurusan_id');
+    $table->string('nama_siswa');
+    $table->string('nis');
+    $table->string('no_hp');
 
-        return response()->json([
-            'success' => true,
-            'data' => $users
-        ]);
+            $table->foreign('kelas_id')->references('kelas_id')->on('kelas');
+            $table->foreign('jurusan_id')->references('jurusan_id')->on('jurusan');
+});
+
     }
 
     /**
-     * Menambahkan pengguna baru.
+     * Reverse the migrations.
      */
-    public function store(Request $request)
+    public function down(): void
     {
-        // Validasi input
-        $validated = $request->validate([
-            'user_nama' => 'required|string|max:50',
-            'user_pass' => 'required|string|min:6',
-            'role' => 'required|in:superuser,admin,user',
-            'user_sts' => 'required|in:0,1',
-        ]);
-
-        // Membuat pengguna baru tanpa menyertakan user_id (karena auto increment)
-        $user = new Pengguna();
-        $user->user_nama = $request->user_nama;
-        $user->user_pass = bcrypt($request->user_pass); // Enkripsi password
-        $user->role = $request->role;
-        $user->user_sts = $request->user_sts;
-        $user->save();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Pengguna berhasil ditambahkan',
-            'data' => $user
-        ]);
+        Schema::dropIfExists('siswa');
     }
-
-    /**
-     * Menampilkan detail pengguna berdasarkan user_id.
-     */
-    public function show($user_id)
-    {
-        // Mencari pengguna berdasarkan user_id
-        $user = Pengguna::find($user_id);
-
-        if ($user) {
-            return response()->json([
-                'success' => true,
-                'data' => $user
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Pengguna tidak ditemukan'
-            ]);
-        }
-    }
-
-    /**
-     * Memperbarui data pengguna.
-     */
-    public function update(Request $request, $user_id)
-    {
-        // Validasi input
-        $validated = $request->validate([
-            'user_nama' => 'required|string|max:50',
-            'user_pass' => 'nullable|string|min:6', // Password opsional jika tidak diubah
-            'role' => 'required|in:superuser,admin,user',
-            'user_sts' => 'required|in:0,1',
-        ]);
-
-        // Mencari pengguna berdasarkan user_id
-        $user = Pengguna::find($user_id);
-
-        if ($user) {
-            // Update data pengguna
-            $user->user_nama = $request->user_nama;
-            if ($request->has('user_pass') && $request->user_pass) {
-                $user->user_pass = bcrypt($request->user_pass); // Enkripsi password
-            }
-            $user->role = $request->role;
-            $user->user_sts = $request->user_sts;
-            $user->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Pengguna berhasil diperbarui',
-                'data' => $user
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Pengguna tidak ditemukan'
-            ]);
-        }
-    }
-
-    /**
-     * Menghapus pengguna berdasarkan user_id.
-     */
-    public function destroy($user_id)
-    {
-        // Mencari pengguna berdasarkan user_id
-        $user = Pengguna::find($user_id);
-
-        if ($user) {
-            $user->delete();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Pengguna berhasil dihapus'
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Pengguna tidak ditemukan'
-            ]);
-        }
-    }
-}
+};

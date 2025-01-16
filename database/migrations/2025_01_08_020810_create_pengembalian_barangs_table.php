@@ -19,7 +19,7 @@ return new class extends Migration
             $table->enum('kembali_sts', ['0','1']);
 
             $table->foreign('pb_id')->references('pb_id')->on('peminjaman');
-            $table->foreign('user_id')->references('user_id')->on('penggunas');
+            $table->foreign('user_id')->references('user_id')->on('pengguna');
         });
     }
 

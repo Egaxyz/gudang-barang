@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('peminjaman', function (Blueprint $table) {
             $table->string('pb_id', 20)->primary();
-            $table->integer('user_id');
+            $table->integer('siswa_id');
             $table->dateTime('pb_tgl');
             $table->string('pb_no_siswa', 20);
             $table->string('pb_nama_siswa', 100);
             $table->dateTime('pb_harus_kembali_tgl');
             $table->enum('pb_stat', ['0','1']);
 
-            $table->foreign('user_id')->references('user_id')->on('penggunas');
+            $table->foreign('siswa_id')->references('siswa_id')->on('siswa');
         });
     }
 

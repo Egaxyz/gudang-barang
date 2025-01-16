@@ -33,7 +33,9 @@ class PeminjamanCotroller extends Controller
     // Simpan data peminjaman
     $peminjaman = new Peminjaman();
     $peminjaman->pb_id = $pb_id_baru;
-    $peminjaman->user_id = $request->user_id;
+    $peminjaman->siswa_id = $request->siswa_id;
+    $peminjaman->pb_nama_siswa = $request->pb_no_siswa;
+    $peminjaman->pb_no_siswa = $request->pb_no_siswa;
     $peminjaman->pb_harus_kembali_tgl = $request->pb_harus_kembali_tgl;
     $peminjaman->pb_tgl = now();
     $peminjaman->pb_stat = $request->pb_stat;
@@ -47,7 +49,7 @@ class PeminjamanCotroller extends Controller
         'message' => 'Peminjaman berhasil disimpan',
         'data' => [
             'pb_id' => $peminjaman->pb_id,
-            'user_id' => $peminjaman->user_id,
+            'siswa_id' => $peminjaman->siswa_id,
             'pb_harus_kembali_tgl' => $peminjaman->pb_harus_kembali_tgl,
             'pb_tgl' => $peminjaman->pb_tgl,
             'pb_stat' => $peminjaman->pb_stat,
