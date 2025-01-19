@@ -14,10 +14,11 @@ return new class extends Migration
         Schema::create('kelas', function (Blueprint $table) {
             $table->integer('kelas_id')->autoIncrement()->primary();
             $table->enum('tingkatan',['X', 'XI', 'XII']);
-            $table->integer('konsentrasi_id');
+            $table->integer('jurusan_id');
+            $table->string('konsentrasi', 10);
             $table->integer('no_konsentrasi');
 
-            $table->foreign('konsentrasi_id')->references('konsentrasi_id')->on('konsentrasi');
+            $table->foreign('jurusan_id')->references('jurusan_id')->on('jurusan');
         });
     }
 

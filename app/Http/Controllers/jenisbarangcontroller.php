@@ -12,17 +12,29 @@ class JenisBarangController extends Controller
      * Menyimpan data jenis barang baru.
      */
     public function store(Request $request)
+    
     {
+
+         $tahun = Carbon::now()->format('Y');
+
+        // Dapatkan nomor urut terakhir berdasarkan tahun dari kolom br_tgl_entry
+        $lastItem = jenis_barang::whereYear('tgl_entry', $tahun)
+            ->orderBy('jns_brg_kode', 'desc')
+            ->first();
+
+        $lastNoUrut = $lastItem ? intval(substr($lastItem->jns_brg_kode, -3)) : 0;
+        $newNoUrut = str_pad($lastNoUrut + 1, 3, '0', STR_PAD_LEFT);
+
+        // Buat kode barang baru
+        $kodeJenisBarangBaru = "JB" . $tahun . $newNoUrut;
         // Validasi input
-        $validated = $request->validate([
-            'jns_brg_kode' => 'required|unique:jenis_barang,jns_brg_kode',
-            'jns_barang_nama' => 'required|string|max:255',
-        ]);
+        
 
         // Menyimpan data jenis barang baru
         $jenisBarang = new jenis_barang();
-        $jenisBarang->jns_brg_kode = $request->jns_brg_kode;
+        $jenisBarang->jns_brg_kode = $kodeJenisBarangBaru;
         $jenisBarang->jns_barang_nama = $request->jns_barang_nama;
+        $jenisBarang->tgl_entry = $request->tgl_entry;
         $jenisBarang->save();
 
         return response()->json([

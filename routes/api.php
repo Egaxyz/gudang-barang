@@ -3,7 +3,6 @@
 use App\Http\Controllers\Barang_Asal_Controller;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\KelasController;
-use App\Http\Controllers\KonsentrasiController;
 use App\Http\Controllers\PeminjamanBarangController;
 use App\Http\Controllers\Barang;
 use App\Http\Controllers\JenisBarangController;
@@ -34,9 +33,6 @@ Route::post('/pengguna', [UserController::class, 'store']);
 Route::get('/jurusan', [JurusanController::class, 'index']);
 Route::post('/jurusan', [JurusanController::class, 'store']);
 Route::delete('/jurusan/{id}', [JurusanController::class, 'destroy']);
-
-Route::get('/konsentrasi', [KonsentrasiController::class, 'index']);
-Route::post('/konsentrasi', [KonsentrasiController::class, 'store']);
 
 Route::get('/kelas', [KelasController::class, 'index']);
 Route::post('/kelas', [KelasController::class, 'store']);

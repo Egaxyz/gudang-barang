@@ -19,8 +19,8 @@ return new class extends Migration
     $table->string('nis');
     $table->string('no_hp');
 
-            $table->foreign('kelas_id')->references('kelas_id')->on('kelas');
-            $table->foreign('jurusan_id')->references('jurusan_id')->on('jurusan');
+    $table->foreign('kelas_id')->references('kelas_id')->on('kelas');
+    $table->foreign('jurusan_id')->references('jurusan_id')->on('jurusan');
 });
 
     }
