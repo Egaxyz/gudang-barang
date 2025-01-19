@@ -13,7 +13,7 @@ class jenis_barang extends Model
     protected $table = 'jenis_barang';
 
     protected $fillable = [
-        'jns_brg_kode',
-        'jns_barang_nama'
+        'jns_barang_nama',
+        'tgl_entry'
     ];
 }
