@@ -66,4 +66,52 @@ class Barang extends Controller
             'data' => $data
         ]);
     }
+    public function update(Request $request, $br_kode)
+    {
+        // Cari data berdasarkan br_kode
+        $barang = barang_inventaris::find($br_kode);
+
+        if (!$barang) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
+
+        // Update data
+        $barang->br_tgl_terima = $request->br_tgl_terima;
+        $barang->br_tgl_entry = now();
+        $barang->br_status = $request->br_status;
+        $barang->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil diupdate',
+            'data' => $barang
+        ]);
+    }
+
+    /**
+     * Menghapus data barang inventaris.
+     */
+    public function destroy($br_kode)
+    {
+        // Cari data berdasarkan br_kode
+        $barang = barang_inventaris::find($br_kode);
+
+        if (!$barang) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
+
+        // Hapus data
+        $barang->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data berhasil dihapus'
+        ]);
+    }
 }

@@ -10,7 +10,8 @@ class barang_inventaris extends Model
     use HasFactory;
 
     public $timestamps = false;
-
+    protected $primaryKey = "br_kode";
+    public $incrementing = false;
     protected $fillable = [
         'br_tgl_terima',
         'br_tgl_entry',

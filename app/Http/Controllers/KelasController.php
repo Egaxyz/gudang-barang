@@ -24,19 +24,21 @@ class KelasController extends Controller
     /**
      * Store a new kelas.
      */
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $validated = $request->validate([
-            'tingkatan' => 'required',
-            'no_konsentrasi'=>'required',
-            'konsentrasi_id'=>'required'
-        ]);
+    'tingkatan' => 'required',
+    'konsentrasi' => 'required',
+    'no_konsentrasi' => 'required',
+    'jurusan_id' => 'required',
+]);
+    
 
-        $kelas = kelas::create($validated);
+        $kelas = Kelas::create($validated);
 
         return response()->json([
             'success' => true,
-            'message' => 'kelas berhasil ditambahkan',
+            'message' => 'Kelas berhasil ditambahkan',
             'data' => $kelas,
         ], 201);
     }
@@ -65,26 +67,28 @@ class KelasController extends Controller
     /**
      * Update a specific kelas.
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $kelas_id)
     {
-        $kelas = kelas::find($id);
+        $kelas = Kelas::find($kelas_id);
 
         if (!$kelas) {
             return response()->json([
                 'success' => false,
-                'message' => 'kelas tidak ditemukan',
+                'message' => 'Kelas tidak ditemukan',
             ], 404);
         }
 
         $validated = $request->validate([
-            'kelas' => 'required|string|max:100',
+            'tingkatan' => 'required',
+    'konsentrasi' => 'required',
+    'no_konsentrasi' => 'required',
         ]);
 
         $kelas->update($validated);
 
         return response()->json([
             'success' => true,
-            'message' => 'kelas berhasil diperbarui',
+            'message' => 'Kelas berhasil diperbarui',
             'data' => $kelas,
         ], 200);
     }
@@ -92,9 +96,9 @@ class KelasController extends Controller
     /**
      * Delete a specific kelas.
      */
-    public function destroy($id)
+    public function destroy($kelas_id)
     {
-        $kelas = kelas::find($id);
+        $kelas = kelas::find($kelas_id);
 
         if (!$kelas) {
             return response()->json([

@@ -17,6 +17,10 @@ class Pengguna extends Authenticatable
      *
      * @var list<string>
      */
+    protected $table = "pengguna";
+    public $incrementing = false;
+    public $primaryKey = "user_id";
+
     protected $fillable = [
         'user_nama',
         'user_pass',

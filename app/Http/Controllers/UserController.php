@@ -29,7 +29,8 @@ class UserController extends Controller
         $validated = $request->validate([
             'user_nama' => 'required|max:50',
             'user_pass' => 'required|min:8',
-            'role' => 'required|in:superuser,admin,user,siswa',
+            'role' => 'required|in:superuser,admin,user',
+            'user_sts'=> 'required'
         ]);
 
         $validated['user_pass'] = bcrypt($validated['user_pass']); // Hash password
@@ -47,14 +48,14 @@ class UserController extends Controller
     /**
      * Show a specific user.
      */
-    public function show($id)
+    public function show($pengguna_id)
     {
-        $pengguna = Pengguna::find($id);
+        $pengguna = Pengguna::find($pengguna_id);
 
         if (!$pengguna) {
             return response()->json([
                 'success' => false,
-                'message' => 'Pengguna tidak ditemukan',
+                'message' => 'Pengguna tpengguna_idak ditemukan',
             ], 404);
         }
 
@@ -68,56 +69,52 @@ class UserController extends Controller
     /**
      * Update a specific user.
      */
-    public function update(Request $request, $id)
+         public function update(Request $request, $pengguna_id)
     {
-        $pengguna = Pengguna::find($id);
+        // Cari data berdasarkan jns_$pengguna_id
+        $pengguna = Pengguna::find($pengguna_id);
 
         if (!$pengguna) {
             return response()->json([
                 'success' => false,
-                'message' => 'Pengguna tidak ditemukan',
+                'message' => 'Data tpengguna_idak ditemukan'
             ], 404);
         }
 
-        $validated = $request->validate([
-            'user_nama' => 'required|max:50',
-            'role' => 'required|in:superuser,admin,user,siswa',
-            'user_sts' => 'required|in:0,1',
-        ]);
-
-        // Jika password diberikan, validasi dan perbarui
-        if ($request->has('user_pass') && $request->user_pass) {
-            $validated['user_pass'] = bcrypt($request->user_pass);
-        }
-
-        $pengguna->update($validated);
+        // Update data
+        $pengguna->user_nama = $request->user_nama;
+        $pengguna->role = $request->role;
+        $pengguna->user_sts = $request->user_sts;
+        $pengguna->save();
 
         return response()->json([
             'success' => true,
-            'message' => 'Pengguna berhasil diperbarui',
-            'data' => $pengguna,
-        ], 200);
+            'message' => 'Data berhasil diupdate',
+            'data' => $pengguna
+        ]);
     }
 
     /**
-     * Delete a specific user.
+     * Menghapus data jenis barang.
      */
-    public function destroy($id)
+public function destroy($pengguna_id)
     {
-        $pengguna = Pengguna::find($id);
+        // Cari data berdasarkan pengguna_id
+        $pengguna = Pengguna::find($pengguna_id);
 
         if (!$pengguna) {
             return response()->json([
                 'success' => false,
-                'message' => 'Pengguna tidak ditemukan',
+                'message' => 'Data tidak ditemukan'
             ], 404);
         }
 
+        // Hapus data
         $pengguna->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Pengguna berhasil dihapus',
-        ], 200);
+            'message' => 'Data berhasil dihapus'
+        ]);
     }
 }
