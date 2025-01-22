@@ -26,15 +26,17 @@ class SiswaController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nama_siswa' =>  'required',
-            'nis'=>'required',
-            'no_hp'=>'required',
-            'kelas_id'=>'required',
-            'jurusan_id'=>'required'
-        ]);
+  $validated = $request->validate([
+    'nama_siswa' => 'required',
+    'nis' => 'required|unique:siswa,nis', // Validasi unik di Laravel
+    'no_hp' => 'required',
+    'kelas_id' => 'required',
+    'jurusan_id' => 'required',
+]);
+
 
         $siswa = siswa::create($validated);
+        
 
         return response()->json([
             'success' => true,
@@ -79,7 +81,9 @@ class SiswaController extends Controller
         }
 
         $validated = $request->validate([
-            'siswa' => 'required|string|max:100',
+             'nama_siswa' =>  'required',
+            'nis'=>'required',
+            'no_hp'=>'required',
         ]);
 
         $siswa->update($validated);

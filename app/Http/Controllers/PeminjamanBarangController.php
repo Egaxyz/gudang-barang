@@ -10,22 +10,36 @@ class PeminjamanBarangController extends Controller
 {
     /**
      * Menyimpan data peminjaman barang.
-     */public function store(Request $request)
+     */
+    public function store(Request $request)
 {
     // Validasi input dari pengguna
     $request->validate([
-        'br_kode' => 'required|string|max:12', // Kode barang
-        'pdb_sts' => 'required|string|max:2',  // Status peminjaman
+        'br_kode' => 'required|string', // Kode barang
+        'pdb_sts' => 'required|string',  // Status peminjaman
+        'pdb_tgl' => 'required'
     ]);
+  $barangDipinjam = Peminjaman_barang::where('br_kode', $request->br_kode)
+        ->where('pdb_sts', 'dipinjam') 
+        ->first();
 
-    // Ambil pb_id terbaru dari tabel peminjaman
-    $peminjamanTerbaru = Peminjaman::orderBy('pb_id', 'desc')->first();
-
-
-    if (!$peminjamanTerbaru) {
+    if ($barangDipinjam) {
         return response()->json([
             'success' => false,
-            'message' => 'Tidak ada data peminjaman yang ditemukan.'
+            'message' => 'Barang sedang dipinjam dan tidak dapat dipinjam bersamaan',
+        ], 400);
+    }
+
+    // Debugging: Fetch the latest pb_id
+    $peminjamanTerbaru = Peminjaman_barang::orderBy('pb_id', 'desc')->first();
+
+    if (!$peminjamanTerbaru) {
+        // Debugging: Log all records to verify data structure
+        $allRecords = Peminjaman_barang::all();
+        return response()->json([
+            'success' => false,
+            'message' => 'Tidak ada data peminjaman ditemukan, meskipun data ada.',
+            'debug_data' => $allRecords,
         ], 404);
     }
 
@@ -61,14 +75,10 @@ $peminjamanBarang->save();
         'data' => $peminjamanBarang
     ]);
 }
-
-
-
-
-
-    /**
+    /*
      * Menampilkan semua data peminjaman barang.
-     */public function index()
+     */
+    public function index()
 {
     // Ambil semua data dari tabel Peminjaman_barang
     $data = Peminjaman_barang::orderBy('pdb_tgl', 'desc')->get();
@@ -79,4 +89,58 @@ $peminjamanBarang->save();
     ]);
 }
 
+public function update(Request $request, $pbd_id)
+    {
+        // Validasi input
+        $request->validate([
+            'pdb_tgl' => 'required', // Kode barang
+        ]);
+
+        // Cari data berdasarkan pbd_id
+        $peminjamanBarang = Peminjaman_barang::where('pbd_id', $pbd_id)->first();
+
+        if (!$peminjamanBarang) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data peminjaman barang tidak ditemukan.',
+            ], 404);
+        }
+
+        // Perbarui data jika ada input baru
+        if ($request->has('pdb_tgl')) {
+            $peminjamanBarang->pdb_tgl = $request->pdb_tgl;
+        }
+
+        $peminjamanBarang->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data peminjaman barang berhasil diperbarui.',
+            'data' => $peminjamanBarang
+        ]);
+    }
+
+    /**
+     * Menghapus data peminjaman barang.
+     */
+    public function destroy($pbd_id)
+    {
+        // Cari data berdasarkan pbd_id
+        $peminjamanBarang = Peminjaman_barang::where('pbd_id', $pbd_id)->first();
+
+        if (!$peminjamanBarang) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data peminjaman barang tidak ditemukan.',
+            ], 404);
+        }
+
+        // Hapus data
+        $peminjamanBarang->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data peminjaman barang berhasil dihapus.'
+        ]);
+    }
 }

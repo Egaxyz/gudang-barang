@@ -12,10 +12,12 @@ class peminjaman extends Model
     protected $table = 'peminjaman';
 
     public $timestamps = false;
+    public $incrementing = false;
+    protected $primaryKey = 'pb_id';
 
     protected $fillable = [
         'pb_tgl',
-        'pb_no_siswa',
+        'pb_nis_siswa',
         'pb_nama_siswa',
         'pb_harus_kembali_tgl',
         'pb_stat'

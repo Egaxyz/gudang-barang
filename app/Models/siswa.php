@@ -6,9 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class siswa extends Model
 {
-    public $table = 'siswa';
+    protected $table = 'siswa';
 
     public $timestamps = false;
+    public $incrementing = false;
+    public $primaryKey = 'siswa_id';
 
     protected $fillable = [
         'nama_siswa',

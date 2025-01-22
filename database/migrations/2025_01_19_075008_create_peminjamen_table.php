@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('pb_id', 20)->primary();
             $table->integer('siswa_id');
             $table->dateTime('pb_tgl');
-            $table->string('pb_no_siswa', 20);
+            $table->string('pb_nis_siswa', 20);
             $table->string('pb_nama_siswa', 100);
             $table->dateTime('pb_harus_kembali_tgl');
             $table->enum('pb_stat', ['0','1']);

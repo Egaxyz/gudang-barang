@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\siswa;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\peminjaman;
@@ -12,8 +13,22 @@ class PeminjamanCotroller extends Controller
 {
     // Validasi input dari pengguna
     $request->validate([
-        'pb_stat' => 'required|string|max:2', // Status peminjaman
+        'pb_nama_siswa' => 'required',
+        'pb_nis_siswa'=>'required',
+        'pb_stat' => 'required', // Status peminjaman
     ]);
+
+    $siswa = siswa::where('siswa_id', $request->siswa_id)
+     ->where('nis', $request->pb_nis_siswa)
+        ->where('nama_siswa', $request->pb_nama_siswa)
+        ->first();
+
+    if (!$siswa) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Data siswa tidak valid NIS atau Nama atau siswa_id tidak sesuai.',
+        ], 400);
+    }
 
     // Tahun dan bulan saat ini
     $thn_sekarang = date('Y');
@@ -34,8 +49,8 @@ class PeminjamanCotroller extends Controller
     $peminjaman = new Peminjaman();
     $peminjaman->pb_id = $pb_id_baru;
     $peminjaman->siswa_id = $request->siswa_id;
-    $peminjaman->pb_nama_siswa = $request->pb_no_siswa;
-    $peminjaman->pb_no_siswa = $request->pb_no_siswa;
+    $peminjaman->pb_nama_siswa = $request->pb_nama_siswa;
+    $peminjaman->pb_nis_siswa = $request->pb_nis_siswa;
     $peminjaman->pb_harus_kembali_tgl = $request->pb_harus_kembali_tgl;
     $peminjaman->pb_tgl = now();
     $peminjaman->pb_stat = $request->pb_stat;
@@ -76,4 +91,61 @@ class PeminjamanCotroller extends Controller
             'data' => $data
         ]);
     }
+        /**
+     * Update data peminjaman berdasarkan pb_id.
+     */
+    public function update(Request $request, $pb_id)
+    {
+        // Cari data peminjaman berdasarkan pb_id
+        $peminjaman = Peminjaman::where('pb_id', $pb_id)->first();
+
+        if (!$peminjaman) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data peminjaman tidak ditemukan',
+            ], 404);
+        }
+
+        // Validasi input dari pengguna
+        $validated = $request->validate([
+            'pb_nama_siswa' => 'required',
+            'pb_nis_siswa' => 'required',
+            'pb_harus_kembali_tgl' => 'required',
+            'pb_stat' => 'required',
+        ]);
+
+        // Update data peminjaman
+        $peminjaman->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data peminjaman berhasil diperbarui',
+            'data' => $peminjaman,
+        ]);
+    }
+
+    /**
+     * Hapus data peminjaman berdasarkan pb_id.
+     */
+    public function destroy($pb_id)
+    {
+        // Cari data peminjaman berdasarkan pb_id
+        $peminjaman = Peminjaman::where('pb_id', $pb_id)->first();
+
+        if (!$peminjaman) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data peminjaman tidak ditemukan',
+            ], 404);
+        }
+
+        // Hapus data peminjaman
+        $peminjaman->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data peminjaman berhasil dihapus',
+        ]);
+    }
+
 }

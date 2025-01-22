@@ -14,9 +14,13 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/peminjaman-barang', [PeminjamanBarangController::class, 'store']); // Menyimpan data peminjaman
 Route::get('/peminjaman-barang', [PeminjamanBarangController::class, 'index']); // Melihat semua data peminjaman
+Route::put('/peminjaman-barang/{id}', [PeminjamanBarangController::class, 'update']);
+Route::delete('/peminjaman-barang/{id}', [PeminjamanBarangController::class, 'destroy']);
 
 Route::post('/peminjaman', [PeminjamanCotroller::class, 'store']); // Menyimpan data peminjaman
 Route::get('/peminjaman', [PeminjamanCotroller::class, 'index']); // Melihat semua data peminjaman
+Route::put('/peminjaman/{id}', [PeminjamanCotroller::class, 'update']);
+Route::delete('/peminjaman/{id}', [PeminjamanCotroller::class, 'destroy']);
 
 Route::get('/barang_inventaris', [Barang::class, 'index']);
 Route::post('/barang_inventaris', [Barang::class, 'store']);
@@ -50,3 +54,5 @@ Route::delete('/kelas/{id}', [KelasController::class, 'destroy']);
 
 Route::get('/siswa', [SiswaController::class, 'index']);
 Route::post('/siswa', [SiswaController::class, 'store']);
+Route::put('/siswa/{id}', [SiswaController::class, 'update']);
+Route::delete('/siswa/{id}', [SiswaController::class, 'destroy']);

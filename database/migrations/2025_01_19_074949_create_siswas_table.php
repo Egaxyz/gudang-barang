@@ -16,7 +16,7 @@ return new class extends Migration
     $table->integer('kelas_id');
     $table->integer('jurusan_id');
     $table->string('nama_siswa');
-    $table->string('nis');
+    $table->string('nis')->unique();
     $table->string('no_hp');
 
     $table->foreign('kelas_id')->references('kelas_id')->on('kelas');
