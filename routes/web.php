@@ -7,6 +7,7 @@ use App\Http\Controllers\PeminjamanBarangController;
 use App\Http\Controllers\Barang;
 use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\PeminjamanCotroller;
+use App\Http\Controllers\PengembalianController;
 use App\Http\Controllers\SiswaController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -56,3 +57,8 @@ Route::get('/siswa', [SiswaController::class, 'index']);
 Route::post('/siswa', [SiswaController::class, 'store']);
 Route::put('/siswa/{id}', [SiswaController::class, 'update']);
 Route::delete('/siswa/{id}', [SiswaController::class, 'destroy']);
+
+Route::post('/pengembalian', [PengembalianController::class, 'store']); // Menyimpan data peminjaman
+Route::get('/pengembalian', [PengembalianController::class, 'index']); // Melihat semua data peminjaman
+Route::put('/pengembalian/{id}', [PengembalianController::class, 'update']);
+Route::delete('/pengembalian/{id}', [PengembalianController::class, 'destroy']);

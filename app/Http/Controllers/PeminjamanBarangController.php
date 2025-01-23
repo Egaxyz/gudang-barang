@@ -19,7 +19,7 @@ class PeminjamanBarangController extends Controller
         'pdb_sts' => 'required|string',  // Status peminjaman
         'pdb_tgl' => 'required'
     ]);
-  $barangDipinjam = Peminjaman_barang::where('br_kode', $request->br_kode)
+    $barangDipinjam = Peminjaman_barang::where('br_kode', $request->br_kode)
         ->where('pdb_sts', 'dipinjam') 
         ->first();
 
