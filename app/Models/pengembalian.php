@@ -16,4 +16,8 @@ class pengembalian extends Model
         'kembali_tgl',
         'kembali_sts'
     ];
+    public function pengguna()
+{
+    return $this->belongsTo(pengguna::class, 'user_id');
+}
 }

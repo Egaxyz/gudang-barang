@@ -1,27 +1,29 @@
 @extends('templates.header')
+
 @push('style')
-    <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
 @endpush
+
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Barang Inventaris</h1>
-                        <p>Status Barang: 1 = kondisi baik 0 = barang dihapus</p>
+                        <h1>Jenis Barang</h1>
                     </div>
                 </div>
             </div>
         </section>
+
         <div class="card">
             <div class="card-header">
-                <button class="btn bg-primary" type="button" data-toggle="modal" data-target="#formModal"><i
-                        class="fas fa-plus-square"></i> Data Barang</button>
+                <button class="btn bg-primary" type="button" data-toggle="modal" data-target="#formModal">
+                    <i class="fas fa-plus-square"></i> Tambah Jenis Barang
+                </button>
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="collapse">
@@ -36,29 +38,24 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Kode Barang</th>
-                            <th>Jenis Barang</th>
-                            <th>Asal Barang</th>
-                            <th>Tanggal Terima</th>
+                            <th>Kode Jenis Barang</th>
+                            <th>Nama Jenis Barang</th>
                             <th>Tanggal Entry</th>
-                            <th>Status</th>
                             <th>Menu</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($barang_inventaris as $barang)
+                        @foreach ($jenis_barang as $barang)
                             <tr>
-                                <td>{{ $barang->br_kode }}</td>
-                                <td>{{ $barang->jenisBarang->jns_barang_nama ?? 'Unknown' }}</td>
-                                <td>{{ $barang->asalBarang->nama_perusahaan ?? 'Unknown' }}</td>
-                                <td>{{ $barang->br_tgl_terima }}</td>
-                                <td>{{ $barang->br_tgl_entry }}</td>
-                                <td>{{ $barang->br_status }}</td>
+                                <td>{{ $barang->jns_brg_kode }}</td>
+                                <td>{{ $barang->jns_barang_nama }}</td>
+                                <td>{{ $barang->tgl_entry }}</td>
                                 <td>
                                     <button class="btn btn-success" type="button" data-toggle="modal"
-                                        data-target="#formModal" data-mode="edit">Edit</button>
+                                        data-target="#formModal" data-id="{{ $barang->jns_brg_kode }}"
+                                        data-nama="{{ $barang->jns_barang_nama }}">Edit</button>
                                     <button class="btn btn-danger" type="button" data-toggle="modal"
-                                        data-target="#deleteModal" data-id="{{ $barang->br_kode }}">Delete</button>
+                                        data-target="#deleteModal" data-id="{{ $barang->jns_brg_kode }}">Delete</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -80,7 +77,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    Apakah Anda yakin ingin menghapus data barang ini?
+                    Apakah Anda yakin ingin menghapus jenis barang ini?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -93,15 +90,27 @@
             </div>
         </div>
     </div>
-    @include('SuperUser/Barang/modals')
+
+    <!-- Modal Form Edit/Tambah Jenis Barang -->
 @endsection
+
 @push('script')
     <script>
+        // Set up the modal for editing an existing item
+        $(document).on('click', '[data-toggle="modal"][data-target="#formModal"]', function() {
+            var barangId = $(this).data('id');
+            var barangNama = $(this).data('nama');
+            $('#nama_barang').val(barangNama);
+            $('#formModal form').attr('action', '/jenis-barang/' + barangId);
+        });
+
+        // Handle delete button click
         $(document).on('click', '[data-toggle="modal"][data-target="#deleteModal"]', function() {
             var barangKode = $(this).data('id');
-            $('#deleteForm').attr('action', '/barang/' + barangKode);
+            $('#deleteForm').attr('action', '/jenis-barang/' + barangKode);
         });
     </script>
+
     <script src="{{ asset('assets') }}/plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="{{ asset('assets') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
     <script src="{{ asset('assets') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
@@ -115,7 +124,7 @@
     <script src="{{ asset('assets') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="{{ asset('assets') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
     <script src="{{ asset('assets') }}/plugins/sweetalert2/sweetalert2.min.js"></script>
-    <!-- Page specific script -->
+
     <script>
         $(function() {
             $("#example1").DataTable({
@@ -124,15 +133,6 @@
                 "autoWidth": false,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": true,
-                "lengthChange": false,
-                "searching": false,
-                "ordering": true,
-                "info": true,
-                "autoWidth": false,
-                "responsive": true,
-            });
         });
     </script>
 @endpush

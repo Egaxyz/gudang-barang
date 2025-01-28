@@ -12,16 +12,15 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Barang Inventaris</h1>
-                        <p>Status Barang: 1 = kondisi baik 0 = barang dihapus</p>
+                        <h1>Daftar Peminjaman</h1>
                     </div>
                 </div>
             </div>
         </section>
         <div class="card">
             <div class="card-header">
-                <button class="btn bg-primary" type="button" data-toggle="modal" data-target="#formModal"><i
-                        class="fas fa-plus-square"></i> Data Barang</button>
+                <button class="btn bg-warning" type="button" data-toggle="modal" data-target="#formModal"><i
+                        class="fas fa-reply"></i> Pengembalian Barang</button>
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="collapse">
@@ -36,29 +35,32 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Kode Barang</th>
-                            <th>Jenis Barang</th>
-                            <th>Asal Barang</th>
-                            <th>Tanggal Terima</th>
-                            <th>Tanggal Entry</th>
+                            <th>Kode Peminjaman</th>
+                            <th>Nama Peminjam</th>
+                            <th>NIS Peminjam</th>
+                            <th>Tanggal Peminjaman</th>
+                            <th>Tanggal Harus Kembali</th>
                             <th>Status</th>
                             <th>Menu</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($barang_inventaris as $barang)
+                        @foreach ($peminjaman as $pinjam)
                             <tr>
-                                <td>{{ $barang->br_kode }}</td>
-                                <td>{{ $barang->jenisBarang->jns_barang_nama ?? 'Unknown' }}</td>
-                                <td>{{ $barang->asalBarang->nama_perusahaan ?? 'Unknown' }}</td>
-                                <td>{{ $barang->br_tgl_terima }}</td>
-                                <td>{{ $barang->br_tgl_entry }}</td>
-                                <td>{{ $barang->br_status }}</td>
+                                <td>{{ $pinjam->pb_id }}</td>
+                                <td>{{ $pinjam->pb_nama_siswa }}</td>
+                                <td>{{ $pinjam->pb_nis_siswa }}</td>
+                                <td>{{ $pinjam->pb_tgl }}</td>
+                                <td>{{ $pinjam->pb_harus_kembali_tgl }}</td>
+                                <td>{{ $pinjam->pb_stat }}</td>
                                 <td>
-                                    <button class="btn btn-success" type="button" data-toggle="modal"
-                                        data-target="#formModal" data-mode="edit">Edit</button>
-                                    <button class="btn btn-danger" type="button" data-toggle="modal"
-                                        data-target="#deleteModal" data-id="{{ $barang->br_kode }}">Delete</button>
+                                    <div class="d-flex justify-content-start">
+                                        <button class="btn btn-success btn-m mr-2" type="button" data-toggle="modal"
+                                            data-target="#formModal" data-mode="edit"
+                                            data-id="{{ $pinjam->pb_id }}">Edit</button>
+                                        <button class="btn btn-danger btn-m" type="button" data-toggle="modal"
+                                            data-target="#deleteModal" data-id="{{ $pinjam->pb_id }}">Delete</button>
+                                    </div>
                                 </td>
                             </tr>
                         @endforeach
@@ -80,7 +82,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    Apakah Anda yakin ingin menghapus data barang ini?
+                    Apakah Anda yakin ingin menghapus data peminjaman ini?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
@@ -93,8 +95,10 @@
             </div>
         </div>
     </div>
-    @include('SuperUser/Barang/modals')
+
+    @include('SuperUser/Peminjaman/modals')
 @endsection
+
 @push('script')
     <script>
         $(document).on('click', '[data-toggle="modal"][data-target="#deleteModal"]', function() {

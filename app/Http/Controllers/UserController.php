@@ -12,18 +12,11 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = Pengguna::all();
+        $data['pengguna'] = Pengguna::get();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Daftar pengguna berhasil diambil',
-            'data' => $users,
-        ], 200);
+        return view('SuperUser/Pengguna.index')->with($data);
     }
 
-    /**
-     * Store a new user.
-     */
     public function store(Request $request)
     {
         $validated = $request->validate([

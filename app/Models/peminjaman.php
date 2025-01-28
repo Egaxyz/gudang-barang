@@ -22,4 +22,8 @@ class peminjaman extends Model
         'pb_harus_kembali_tgl',
         'pb_stat'
     ];
+    public function siswa()
+{
+    return $this->belongsTo(siswa::class, 'siswa_id');
+}
 }

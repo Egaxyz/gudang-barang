@@ -52,14 +52,9 @@ class Barang_Asal_Controller extends Controller
         $tahun = $request->input('tahun', Carbon::now()->format('Y'));
 
         // Ambil data berdasarkan tahun dari kolom tgl_kirim
-        $data = asal_barang::whereYear('tgl_kirim', $tahun)
-            ->orderBy('id_asal_br', 'asc')
-            ->get();
+        $data['asal_barang'] = asal_barang::get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $data
-        ]);
+        return view('SuperUser/Asal_Barang.index')->with($data);
     }
 
     /**

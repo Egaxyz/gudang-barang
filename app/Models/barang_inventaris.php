@@ -33,4 +33,8 @@ class barang_inventaris extends Model
     {
         return $this->belongsTo(asal_barang::class, 'id_asal_br', 'id_asal_br');
     }
+    public function peminjamanBarang()
+    {
+        return $this->belongsTo(peminjaman_barang::class, 'br_kode', 'br_kode');
+    }
 }

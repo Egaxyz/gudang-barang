@@ -56,16 +56,71 @@ public function index(Request $request)
     // Tahun default adalah tahun sekarang
     $tahun = $request->input('tahun', Carbon::now()->format('Y'));
 
+    // Ambil data berdasarkan tahun dari kolom br_tgl_entry (untuk laporan)
+    $dataByYear = barang_inventaris::whereYear('br_tgl_entry', $tahun)
+        ->orderBy('br_kode', 'asc')
+        ->get();
+
+    // Mengambil seluruh data barang dan relasi dengan jenisBarang dan asalBarang
+    $barangInventaris = barang_inventaris::with('jenisBarang', 'asalBarang')->get();
+
+    // Mengirim data ke view sesuai route yang dipanggil
+    return view('SuperUser/Barang/index', [
+        'barang_inventaris' => $barangInventaris
+    ]);
+}
+
+// Untuk laporan barang
+public function laporan(Request $request)
+{
+    // Tahun default adalah tahun sekarang
+    $tahun = $request->input('tahun', Carbon::now()->format('Y'));
+
     // Ambil data berdasarkan tahun dari kolom br_tgl_entry
     $dataByYear = barang_inventaris::whereYear('br_tgl_entry', $tahun)
         ->orderBy('br_kode', 'asc')
         ->get();
 
-    $data['barang_inventaris'] = barang_inventaris::with('jenisBarang' , 'asalBarang')->get();
+    // Mengambil seluruh data barang dan relasi dengan jenisBarang dan asalBarang
+    $barangInventaris = barang_inventaris::with('jenisBarang', 'peminjamanBarang')
+       ->leftJoin('peminjaman_barang', 'barang_inventaris.br_kode', '=', 'peminjaman_barang.br_kode')
+        ->select('barang_inventaris.*')
+        ->where(function ($query) {
+            $query->whereNull('peminjaman_barang.pdb_sts') // Barang yang belum dipinjam
+                  ->orWhere('peminjaman_barang.pdb_sts', 'tersedia'); // Status 'tersedia'
+        })
+        ->get();
 
-    return view('SuperUser/Barang/index')->with($data);
+    // Kirim data ke view laporan barang dengan tampilan yang lebih khusus
+    return view('SuperUser/Laporan_Barang/index', [
+        'dataByYear' => $dataByYear,
+        'barang_inventaris' => $barangInventaris
+    ]);
 }
+public function barang_belum_kembali(Request $request)
+{
+    // Tahun default adalah tahun sekarang
+    $tahun = $request->input('tahun', Carbon::now()->format('Y'));
 
+    // Ambil data berdasarkan tahun dari kolom br_tgl_entry
+    $dataByYear = barang_inventaris::whereYear('br_tgl_entry', $tahun)
+        ->orderBy('br_kode', 'asc')
+        ->get();
+
+    // Mengambil seluruh data barang dan relasi dengan jenisBarang dan asalBarang
+   $barangInventaris = barang_inventaris::with('jenisBarang', 'peminjamanBarang')
+   ->leftJoin('peminjaman_barang', 'barang_inventaris.br_kode', '=', 'peminjaman_barang.br_kode')
+   ->select('barang_inventaris.*')
+   ->where('peminjaman_barang.pdb_sts', 'dipinjam') // Filter hanya barang dengan status 'dipinjam'
+   ->get();
+
+
+    // Kirim data ke view laporan barang dengan tampilan yang lebih khusus
+    return view('SuperUser/Barang_Belum_Kembali/index', [
+        'dataByYear' => $dataByYear,
+        'barang_inventaris' => $barangInventaris
+    ]);
+}
 
     public function update(Request $request, $br_kode)
     {
@@ -110,9 +165,6 @@ public function index(Request $request)
         // Hapus data
         $barang->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data berhasil dihapus'
-        ]);
+        return view('SuperUser/barang.index');
     }
 }

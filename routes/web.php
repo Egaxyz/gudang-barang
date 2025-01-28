@@ -31,15 +31,19 @@ Route::post('/barang', [Barang::class, 'store']);
 Route::put('/barang/{id}', [Barang::class, 'update']);
 Route::delete('/barang/{id}', [Barang::class, 'destroy']);
 
-Route::get('/jenis_barang', [JenisBarangController::class, 'index']);
-Route::post('/jenis_barang', [JenisBarangController::class, 'store']);
-Route::put('/jenis_barang/{id}', [JenisBarangController::class, 'update']);
-Route::delete('/jenis_barang/{id}', [JenisBarangController::class, 'destroy']);
+Route::get('/laporan-barang', [Barang::class, 'laporan'])->name('laporan-barang');
 
-Route::get('/asalBarang', [Barang_Asal_Controller::class, 'index']);
-Route::post('/asalBarang', [Barang_Asal_Controller::class, 'store']);
-Route::put('/asalBarang/{id}', [Barang_Asal_Controller::class, 'update']);
-Route::delete('/asalBarang/{id}', [Barang_Asal_Controller::class, 'destroy']);
+Route::get('/barang-belum-kembali', [Barang::class, 'barang_belum_kembali'])->name('barang-belum-kembali');
+
+Route::get('/jenis-barang', [JenisBarangController::class, 'index']);
+Route::post('/jenis-barang', [JenisBarangController::class, 'store']);
+Route::put('/jenis-barang/{id}', [JenisBarangController::class, 'update']);
+Route::delete('/jenis-barang/{id}', [JenisBarangController::class, 'destroy']);
+
+Route::get('/asal-barang', [Barang_Asal_Controller::class, 'index']);
+Route::post('/asal-barang', [Barang_Asal_Controller::class, 'store']);
+Route::put('/asal-barang/{id}', [Barang_Asal_Controller::class, 'update']);
+Route::delete('/asal-barang/{id}', [Barang_Asal_Controller::class, 'destroy']);
 
 Route::get('/pengguna', [UserController::class, 'index']);
 Route::post('/pengguna', [UserController::class, 'store']);

@@ -81,15 +81,9 @@ class PeminjamanCotroller extends Controller
         $tahun = $request->input('tahun', Carbon::now()->format('Y'));
         $bulan = $request->input('bulan',Carbon::now()->format('m'));
         // Ambil data berdasarkan tahun dari kolom br_tgl_entry
-        $data = peminjaman::whereYear('pb_tgl', $tahun)
-            ->whereMonth('pb_tgl', $bulan)
-            ->orderBy('pb_id', 'asc')
-            ->get();
+        $data['peminjaman'] = peminjaman::get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $data
-        ]);
+        return view('SuperUser/Peminjaman.index')->with($data);
     }
         /**
      * Update data peminjaman berdasarkan pb_id.
