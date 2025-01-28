@@ -20,4 +20,9 @@ class asal_barang extends Model
         'jumlah_kirim',
         'tgl_kirim'
     ];
+
+    public function barangInventaris()
+{
+    return $this->hasMany(barang_inventaris::class, 'id_asal_br', 'id_asal_br');
+}
 }

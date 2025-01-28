@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\asalBarang;
+use App\Models\asal_barang;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -17,7 +17,7 @@ class Barang_Asal_Controller extends Controller
         $tahun = Carbon::now()->format('Y');
 
         // Dapatkan nomor urut terakhir berdasarkan tahun dari kolom tgl_kirim
-        $lastItem = asalBarang::whereYear('tgl_kirim', $tahun)
+        $lastItem = asal_barang::whereYear('tgl_kirim', $tahun)
             ->orderBy('id_asal_br', 'desc')
             ->first();
 
@@ -28,7 +28,7 @@ class Barang_Asal_Controller extends Controller
         $kodeBarangBaru = "AB" . $tahun . $newNoUrut;
 
         // Simpan data baru
-        $asalbarang = new asalBarang();
+        $asalbarang = new asal_barang();
         $asalbarang->id_asal_br = $kodeBarangBaru;
         $asalbarang->nama_perusahaan = $request->nama_perusahaan;
         $asalbarang->jumlah_kirim = $request->jumlah_kirim;
@@ -52,7 +52,7 @@ class Barang_Asal_Controller extends Controller
         $tahun = $request->input('tahun', Carbon::now()->format('Y'));
 
         // Ambil data berdasarkan tahun dari kolom tgl_kirim
-        $data = asalBarang::whereYear('tgl_kirim', $tahun)
+        $data = asal_barang::whereYear('tgl_kirim', $tahun)
             ->orderBy('id_asal_br', 'asc')
             ->get();
 
@@ -68,7 +68,7 @@ class Barang_Asal_Controller extends Controller
     public function update(Request $request, $id_asal_br)
     {
         // Cari data berdasarkan id_asal_br
-        $asalbarang = asalBarang::find($id_asal_br);
+        $asalbarang = asal_barang::find($id_asal_br);
 
         if (!$asalbarang) {
             return response()->json([
@@ -96,7 +96,7 @@ class Barang_Asal_Controller extends Controller
     public function destroy($id_asal_br)
     {
         // Cari data berdasarkan id_asal_br
-        $asalbarang = asalBarang::find($id_asal_br);
+        $asalbarang = asal_barang::find($id_asal_br);
 
         if (!$asalbarang) {
             return response()->json([

@@ -51,21 +51,22 @@ class Barang extends Controller
     /**
      * Mengambil data barang inventaris dengan filter berdasarkan tahun.
      */
-    public function index(Request $request)
-    {
-        // Tahun default adalah tahun sekarang
-        $tahun = $request->input('tahun', Carbon::now()->format('Y'));
+public function index(Request $request)
+{
+    // Tahun default adalah tahun sekarang
+    $tahun = $request->input('tahun', Carbon::now()->format('Y'));
 
-        // Ambil data berdasarkan tahun dari kolom br_tgl_entry
-        $data = barang_inventaris::whereYear('br_tgl_entry', $tahun)
-            ->orderBy('br_kode', 'asc')
-            ->get();
+    // Ambil data berdasarkan tahun dari kolom br_tgl_entry
+    $dataByYear = barang_inventaris::whereYear('br_tgl_entry', $tahun)
+        ->orderBy('br_kode', 'asc')
+        ->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $data
-        ]);
-    }
+    $data['barang_inventaris'] = barang_inventaris::with('jenisBarang' , 'asalBarang')->get();
+
+    return view('SuperUser/Barang/index')->with($data);
+}
+
+
     public function update(Request $request, $br_kode)
     {
         // Cari data berdasarkan br_kode

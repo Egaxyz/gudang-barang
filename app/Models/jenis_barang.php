@@ -18,4 +18,9 @@ class jenis_barang extends Model
         'jns_barang_nama',
         'tgl_entry'
     ];
+    public function barangInventaris()
+{
+    return $this->hasMany(barang_inventaris::class, 'jns_brg_kode', 'jns_brg_kode');
+}
+
 }

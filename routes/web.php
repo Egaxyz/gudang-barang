@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Barang_Asal_Controller;
+use App\Http\Controllers\homeController;
 use App\Http\Controllers\JurusanController;
 use App\Http\Controllers\KelasController;
 use App\Http\Controllers\PeminjamanBarangController;
@@ -13,6 +14,8 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 //
 
+Route::get('/home', [homeController::class, 'index']);
+
 Route::post('/peminjaman-barang', [PeminjamanBarangController::class, 'store']); // Menyimpan data peminjaman
 Route::get('/peminjaman-barang', [PeminjamanBarangController::class, 'index']); // Melihat semua data peminjaman
 Route::put('/peminjaman-barang/{id}', [PeminjamanBarangController::class, 'update']);
@@ -23,10 +26,10 @@ Route::get('/peminjaman', [PeminjamanCotroller::class, 'index']); // Melihat sem
 Route::put('/peminjaman/{id}', [PeminjamanCotroller::class, 'update']);
 Route::delete('/peminjaman/{id}', [PeminjamanCotroller::class, 'destroy']);
 
-Route::get('/barang_inventaris', [Barang::class, 'index']);
-Route::post('/barang_inventaris', [Barang::class, 'store']);
-Route::put('/barang_inventaris/{id}', [Barang::class, 'update']);
-Route::delete('/barang_inventaris/{id}', [Barang::class, 'destroy']);
+Route::get('/barang', [Barang::class, 'index']);
+Route::post('/barang', [Barang::class, 'store']);
+Route::put('/barang/{id}', [Barang::class, 'update']);
+Route::delete('/barang/{id}', [Barang::class, 'destroy']);
 
 Route::get('/jenis_barang', [JenisBarangController::class, 'index']);
 Route::post('/jenis_barang', [JenisBarangController::class, 'store']);

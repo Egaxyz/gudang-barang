@@ -24,4 +24,13 @@ class barang_inventaris extends Model
         'br_tgl_terima' => 'datetime:Y-m-d',
         ];
     }
+
+      public function jenisBarang()
+    {
+        return $this->belongsTo(jenis_barang::class, 'jns_brg_kode', 'jns_brg_kode');
+    }
+    public function asalBarang()
+    {
+        return $this->belongsTo(asal_barang::class, 'id_asal_br', 'id_asal_br');
+    }
 }

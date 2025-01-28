@@ -45,13 +45,9 @@ class JenisBarangController extends Controller
      */
     public function index()
     {
-        // Ambil semua data jenis barang
-        $data = jenis_barang::all();
+    $data['jenis_barang'] = jenis_barang::get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $data
-        ]);
+    return view('SuperUser/Jenis Barang/index')->with($data);
     }
 
     /**
