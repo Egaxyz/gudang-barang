@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('kembali_id', 20)->primary();
             $table->string('pb_id', 20);
             $table->integer('user_id');
-            $table->dateTime('kembali_tgl');
+            $table->date('kembali_tgl');
             $table->enum('kembali_sts', ['0','1']);
 
             $table->foreign('pb_id')->references('pb_id')->on('peminjaman');

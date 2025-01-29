@@ -32,6 +32,26 @@
                 </div>
             </div>
             <div class="card-body">
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                            &times;</button>
+                        <h5><i class="icon fas fa-check"></i>Sukses!</h5>
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if ($errors->any())
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                            x</button>
+                        <h5><i class="icon fas fa-ban"></i>Data Gagal Disimpan!</h5>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -51,10 +71,11 @@
                                 <td>{{ $barang->tgl_kirim }}</td>
                                 <td>
                                     <button class="btn btn-success" type="button" data-toggle="modal"
-                                        data-target="#formModal" data-id="{{ $barang->id_asal_br }}"
+                                        data-target="#formModal" data-mode="edit" data-id="{{ $barang->id_asal_br }}"
                                         data-nama="{{ $barang->nama_perusahaan }}"
                                         data-jumlah="{{ $barang->jumlah_kirim }}"
                                         data-tanggal="{{ $barang->tgl_kirim }}">Edit</button>
+
                                     <button class="btn btn-danger" type="button" data-toggle="modal"
                                         data-target="#deleteModal" data-id="{{ $barang->id_asal_br }}">Delete</button>
                                 </td>
@@ -91,21 +112,44 @@
             </div>
         </div>
     </div>
+    <!-- Modal Edit Data -->
+
+    @include('SuperUser/Asal_Barang.modals')
 @endsection
 
 @push('script')
     <script>
-        // Set up the modal for editing an existing item
-        $(document).on('click', '[data-toggle="modal"][data-target="#formModal"]', function() {
-            var barangId = $(this).data('id');
-            var barangNama = $(this).data('nama');
-            var barangJumlah = $(this).data('jumlah');
-            var barangTanggal = $(this).data('tanggal');
-            $('#nama_perusahaan').val(barangNama);
-            $('#jumlah_kirim').val(barangJumlah);
-            $('#tgl_kirim').val(barangTanggal);
-            $('#formModal form').attr('action', '/asal-barang/' + barangId);
+        $('#formModal').on('show.bs.modal', function(e) {
+            const btn = $(e.relatedTarget);
+            console.log(btn.data());
+            const mode = btn.data('mode'); // Menentukan apakah mode edit atau tambah
+            const id_asal_br = btn.data('id'); // Ambil data id_asal_br
+            const nama_perusahaan = btn.data('nama'); // Ambil data nama_perusahaan
+            const jumlah_kirim = btn.data('jumlah'); // Ambil data jumlah_kirim
+            const tgl_kirim = btn.data('tanggal'); // Ambil data tgl_kirim
+            const modal = $(this); // Ambil modalnya
+
+            // Jika mode adalah edit
+            if (mode == 'edit') {
+                modal.find('.modal-title').text('Edit Data Asal Barang');
+                modal.find('#nama_perusahaan').val(nama_perusahaan); // Isi form dengan data yang diterima
+                modal.find('#jumlah_kirim').val(jumlah_kirim);
+                modal.find('#tgl_kirim').val(tgl_kirim);
+
+                modal.find('.modal-body form').attr('action', '{{ url('asal-barang') }}/' +
+                    id_asal_br); // Sesuaikan action form
+                modal.find('#method').html('@method('PATCH')'); // Menambahkan method PATCH untuk edit
+            } else { // Jika mode adalah tambah
+                modal.find('.modal-title').text('Input Data Asal Barang');
+                modal.find('#nama_perusahaan').val(''); // Reset input jika tambah
+                modal.find('#jumlah_kirim').val('');
+                modal.find('#tgl_kirim').val('');
+                modal.find('#method').html(''); // Kosongkan method karena hanya POST untuk tambah
+                modal.find('.modal-body form').attr('action',
+                    '{{ url('asal-barang') }}'); // Sesuaikan action form untuk tambah
+            }
         });
+
 
         // Handle delete button click
         $(document).on('click', '[data-toggle="modal"][data-target="#deleteModal"]', function() {

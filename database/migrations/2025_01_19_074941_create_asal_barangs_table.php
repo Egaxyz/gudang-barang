@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('id_asal_br',10)->primary();
             $table->string('nama_perusahaan', 20);
             $table->string('jumlah_kirim', 10);
-            $table->dateTime('tgl_kirim');
+            $table->date('tgl_kirim');
         });
     }
 

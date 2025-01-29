@@ -35,6 +35,26 @@
                 </div>
             </div>
             <div class="card-body">
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                            &times;</button>
+                        <h5><i class="icon fas fa-check"></i>Sukses!</h5>
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if ($errors->any())
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                            x</button>
+                        <h5><i class="icon fas fa-ban"></i>Data Gagal Disimpan!</h5>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -51,9 +71,10 @@
                                 <td>{{ $barang->jns_barang_nama }}</td>
                                 <td>{{ $barang->tgl_entry }}</td>
                                 <td>
-                                    <button class="btn btn-success" type="button" data-toggle="modal"
+                                    <button class="btn btn-success" type="button" data-mode="edit" data-toggle="modal"
                                         data-target="#formModal" data-id="{{ $barang->jns_brg_kode }}"
-                                        data-nama="{{ $barang->jns_barang_nama }}">Edit</button>
+                                        data-nama="{{ $barang->jns_barang_nama }}"
+                                        data-tanggal="{{ $barang->tgl_entry }}">Edit</button>
                                     <button class="btn btn-danger" type="button" data-toggle="modal"
                                         data-target="#deleteModal" data-id="{{ $barang->jns_brg_kode }}">Delete</button>
                                 </td>
@@ -91,17 +112,37 @@
         </div>
     </div>
 
-    <!-- Modal Form Edit/Tambah Jenis Barang -->
+    @include('SuperUser/Jenis_Barang/modals')
 @endsection
 
 @push('script')
     <script>
-        // Set up the modal for editing an existing item
-        $(document).on('click', '[data-toggle="modal"][data-target="#formModal"]', function() {
-            var barangId = $(this).data('id');
-            var barangNama = $(this).data('nama');
-            $('#nama_barang').val(barangNama);
-            $('#formModal form').attr('action', '/jenis-barang/' + barangId);
+        $('#formModal').on('show.bs.modal', function(e) {
+            const btn = $(e.relatedTarget);
+            console.log(btn.data());
+            const mode = btn.data('mode'); // Menentukan apakah mode edit atau tambah
+            const jns_brg_kode = btn.data('id'); // Ambil data jns_brg_kode
+            const jns_barang_nama = btn.data('nama'); // Ambil data jns_barang_nama
+            const tgl_entry = btn.data('tanggal'); // Ambil data tgl_entry
+            const modal = $(this); // Ambil modalnya
+
+            // Jika mode adalah edit
+            if (mode == 'edit') {
+                modal.find('.modal-title').text('Edit Data Jenis Barang');
+                modal.find('#jns_barang_nama').val(jns_barang_nama); // Isi form dengan data yang diterima
+                modal.find('#tgl_entry').val(tgl_entry);
+
+                modal.find('.modal-body form').attr('action', '{{ url('jenis-barang') }}/' +
+                    jns_brg_kode); // Sesuaikan action form
+                modal.find('#method').html('@method('PATCH')'); // Menambahkan method PATCH untuk edit
+            } else { // Jika mode adalah tambah
+                modal.find('.modal-title').text('Input Data Jenis Barang');
+                modal.find('#jns_barang_nama').val(''); // Reset input jika tambah
+                modal.find('#tgl_entry').val('');
+                modal.find('#method').html(''); // Kosongkan method karena hanya POST untuk tambah
+                modal.find('.modal-body form').attr('action',
+                    '{{ url('jenis-barang') }}'); // Sesuaikan action form untuk tambah
+            }
         });
 
         // Handle delete button click

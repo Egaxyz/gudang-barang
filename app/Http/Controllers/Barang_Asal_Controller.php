@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAsalBarangRequest;
 use App\Models\asal_barang;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+
 
 class Barang_Asal_Controller extends Controller
 {
     /**
      * Menyimpan data barang inventaris baru.
      */
-    public function store(Request $request)
+    public function store(StoreAsalBarangRequest $request)
     {
         // Dapatkan tahun saat ini
         $tahun = Carbon::now()->format('Y');
@@ -36,11 +38,13 @@ class Barang_Asal_Controller extends Controller
 
         $asalbarang->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data berhasil disimpan',
-            'data' => $asalbarang
+        $request->validate([
+            'nama_perusahaan' => 'required',
+            'jumlah_kirim' => 'required',
+            'tgl_entry' => 'required',
         ]);
+
+        return redirect('asal-barang')->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -78,11 +82,7 @@ class Barang_Asal_Controller extends Controller
         $asalbarang->tgl_kirim = $request->tgl_kirim;
         $asalbarang->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data berhasil diupdate',
-            'data' => $asalbarang
-        ]);
+        return redirect('asal-barang');
     }
 
     /**
@@ -102,10 +102,6 @@ class Barang_Asal_Controller extends Controller
 
         // Hapus data
         $asalbarang->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Data berhasil dihapus'
-        ]);
+        return redirect('asal-barang');
     }
 }

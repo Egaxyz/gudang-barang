@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('pbd_id', 20)->primary();
             $table->string('pb_id', 20);
             $table->string('br_kode', 12);
-            $table->dateTime('pdb_tgl');
+            $table->date('pdb_tgl');
             $table->enum('pdb_sts', ['dipinjam', 'tersedia']);
 
            $table->foreign('br_kode')->references('br_kode')->on('barang_inventaris');

@@ -5,7 +5,7 @@
         <div class="col-sm-10">
             <select name="id_asal_br" id="id_asal_br" class="form-control">
                 <option value="" disabled selected>Pilih Asal Barang</option>
-                @foreach ($asalBarang as $asal)
+                @foreach ($asal_barang as $asal)
                     <option value="{{ $asal->id }}">{{ $asal->nama_asal_barang }}</option>
                 @endforeach
             </select>
@@ -17,7 +17,7 @@
         <div class="col-sm-10">
             <select name="jns_brg_kode" id="jns_brg_kode" class="form-control">
                 <option value="" disabled selected>Pilih Jenis Barang</option>
-                @foreach ($jenisBarang as $jenis)
+                @foreach ($jenis_barang as $jenis)
                     <option value="{{ $jenis->kode }}">{{ $jenis->nama_jenis_barang }}</option>
                 @endforeach
             </select>

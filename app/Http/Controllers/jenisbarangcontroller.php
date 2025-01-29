@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreJenisBarangRequest;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\jenis_barang;
@@ -11,34 +12,34 @@ class JenisBarangController extends Controller
     /**
      * Menyimpan data jenis barang baru.
      */
-    public function store(Request $request)
-    {
-        $tahun = Carbon::now()->format('Y');
+public function store(StoreJenisBarangRequest $request)
+{
+    $request->validate([
+        'jns_barang_nama' => 'required',
+        'tgl_entry' => 'required'
+    ]);
 
-        // Dapatkan nomor urut terakhir berdasarkan tahun dari kolom br_tgl_entry
-        $lastItem = jenis_barang::whereYear('tgl_entry', $tahun)
-            ->orderBy('jns_brg_kode', 'desc')
-            ->first();
+    $tahun = Carbon::now()->format('Y');
 
-        $lastNoUrut = $lastItem ? intval(substr($lastItem->jns_brg_kode, -3)) : 0;
-        $newNoUrut = str_pad($lastNoUrut + 1, 3, '0', STR_PAD_LEFT);
+    // Ambil nomor urut terakhir berdasarkan tahun
+    $lastItem = jenis_barang::whereYear('tgl_entry', $tahun)
+        ->orderBy('jns_brg_kode', 'desc')
+        ->first();
 
-        // Buat kode barang baru
-        $kodeJenisBarangBaru = "JB" . $tahun . $newNoUrut;
+    $lastNoUrut = $lastItem ? intval(substr($lastItem->jns_brg_kode, -3)) : 0;
+    $newNoUrut = str_pad($lastNoUrut + 1, 3, '0', STR_PAD_LEFT);
+    $kodeJenisBarangBaru = "JB" . $tahun . $newNoUrut;
 
-        // Menyimpan data jenis barang baru
-        $jenisBarang = new jenis_barang();
-        $jenisBarang->jns_brg_kode = $kodeJenisBarangBaru;
-        $jenisBarang->jns_barang_nama = $request->jns_barang_nama;
-        $jenisBarang->tgl_entry = $request->tgl_entry;
-        $jenisBarang->save();
+    // Simpan ke database
+    $jenisBarang = new jenis_barang();
+    $jenisBarang->jns_brg_kode = $kodeJenisBarangBaru;
+    $jenisBarang->jns_barang_nama = $request->jns_barang_nama;
+    $jenisBarang->tgl_entry = $request->tgl_entry;
+    $jenisBarang->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Jenis barang berhasil disimpan',
-            'data' => $jenisBarang
-        ]);
-    }
+    return redirect('jenis-barang')->with('success', 'Data berhasil ditambahkan');
+}
+
 
     /**
      * Mengambil semua data jenis barang.
@@ -71,11 +72,7 @@ class JenisBarangController extends Controller
         $jenisBarang->tgl_entry = $request->tgl_entry;
         $jenisBarang->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data berhasil diupdate',
-            'data' => $jenisBarang
-        ]);
+            return redirect('jenis-barang')->with('success', 'Data berhasil diperbarui');
     }
 
     /**
@@ -96,9 +93,6 @@ public function destroy($jns_brg_kode)
         // Hapus data
         $jenisBarang->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data berhasil dihapus'
-        ]);
+        return redirect('jenis-barang');
     }
     }

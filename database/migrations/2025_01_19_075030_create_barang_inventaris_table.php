@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('user_id');
             $table->string('id_asal_br',10);
             $table->date('br_tgl_terima');
-            $table->dateTime('br_tgl_entry');
+            $table->date('br_tgl_entry');
             $table->enum('br_status', ['0','1']);
 
             $table->foreign('jns_brg_kode')->references('jns_brg_kode')->on('jenis_barang');

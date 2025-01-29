@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('jenis_barang', function (Blueprint $table) {
             $table->string('jns_brg_kode', 20)->autoIncrement()->primary();
             $table->string('jns_barang_nama', 50);
-            $table->dateTime('tgl_entry');
+            $table->date('tgl_entry');
         });
     }
 
