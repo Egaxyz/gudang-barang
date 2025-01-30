@@ -24,7 +24,6 @@
                         </select>
                     </div>
 
-                    <!-- Pilihan Jenis Barang -->
                     <div class="form-group">
                         <label for="jns_brg_kode">Jenis Barang</label>
                         <select id="jns_brg_kode" name="jns_brg_kode" class="form-control">

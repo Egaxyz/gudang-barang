@@ -19,7 +19,7 @@
         <div class="card">
             <div class="card-header">
                 <button class="btn bg-primary" type="button" data-toggle="modal" data-target="#formModal">
-                    <i class="fas fa-plus-square"></i> Data Asal Barang
+                    <i class="fas fa-plus-square"></i> Tambah Data Asal Barang
                 </button>
 
                 <div class="card-tools">
@@ -87,7 +87,6 @@
         </div>
     </div>
 
-    <!-- Modal Hapus Data -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -112,7 +111,6 @@
             </div>
         </div>
     </div>
-    <!-- Modal Edit Data -->
 
     @include('SuperUser/Asal_Barang.modals')
 @endsection
@@ -122,36 +120,33 @@
         $('#formModal').on('show.bs.modal', function(e) {
             const btn = $(e.relatedTarget);
             console.log(btn.data());
-            const mode = btn.data('mode'); // Menentukan apakah mode edit atau tambah
-            const id_asal_br = btn.data('id'); // Ambil data id_asal_br
-            const nama_perusahaan = btn.data('nama'); // Ambil data nama_perusahaan
-            const jumlah_kirim = btn.data('jumlah'); // Ambil data jumlah_kirim
-            const tgl_kirim = btn.data('tanggal'); // Ambil data tgl_kirim
-            const modal = $(this); // Ambil modalnya
+            const mode = btn.data('mode');
+            const id_asal_br = btn.data('id');
+            const nama_perusahaan = btn.data('nama');
+            const jumlah_kirim = btn.data('jumlah');
+            const tgl_kirim = btn.data('tanggal');
+            const modal = $(this);
 
-            // Jika mode adalah edit
             if (mode == 'edit') {
                 modal.find('.modal-title').text('Edit Data Asal Barang');
-                modal.find('#nama_perusahaan').val(nama_perusahaan); // Isi form dengan data yang diterima
+                modal.find('#nama_perusahaan').val(nama_perusahaan);
                 modal.find('#jumlah_kirim').val(jumlah_kirim);
                 modal.find('#tgl_kirim').val(tgl_kirim);
 
                 modal.find('.modal-body form').attr('action', '{{ url('asal-barang') }}/' +
-                    id_asal_br); // Sesuaikan action form
-                modal.find('#method').html('@method('PATCH')'); // Menambahkan method PATCH untuk edit
-            } else { // Jika mode adalah tambah
+                    id_asal_br);
+                modal.find('#method').html('@method('PATCH')');
+            } else {
                 modal.find('.modal-title').text('Input Data Asal Barang');
-                modal.find('#nama_perusahaan').val(''); // Reset input jika tambah
+                modal.find('#nama_perusahaan').val('');
                 modal.find('#jumlah_kirim').val('');
                 modal.find('#tgl_kirim').val('');
-                modal.find('#method').html(''); // Kosongkan method karena hanya POST untuk tambah
+                modal.find('#method').html('');
                 modal.find('.modal-body form').attr('action',
-                    '{{ url('asal-barang') }}'); // Sesuaikan action form untuk tambah
+                    '{{ url('asal-barang') }}');
             }
         });
 
-
-        // Handle delete button click
         $(document).on('click', '[data-toggle="modal"][data-target="#deleteModal"]', function() {
             var barangId = $(this).data('id');
             $('#deleteForm').attr('action', '/asal-barang/' + barangId);

@@ -86,7 +86,6 @@
         </div>
     </div>
 
-    <!-- Modal Hapus Data -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -120,32 +119,30 @@
         $('#formModal').on('show.bs.modal', function(e) {
             const btn = $(e.relatedTarget);
             console.log(btn.data());
-            const mode = btn.data('mode'); // Menentukan apakah mode edit atau tambah
-            const jns_brg_kode = btn.data('id'); // Ambil data jns_brg_kode
-            const jns_barang_nama = btn.data('nama'); // Ambil data jns_barang_nama
-            const tgl_entry = btn.data('tanggal'); // Ambil data tgl_entry
-            const modal = $(this); // Ambil modalnya
+            const mode = btn.data('mode');
+            const jns_brg_kode = btn.data('id');
+            const jns_barang_nama = btn.data('nama');
+            const tgl_entry = btn.data('tanggal');
+            const modal = $(this);
 
-            // Jika mode adalah edit
             if (mode == 'edit') {
                 modal.find('.modal-title').text('Edit Data Jenis Barang');
-                modal.find('#jns_barang_nama').val(jns_barang_nama); // Isi form dengan data yang diterima
+                modal.find('#jns_barang_nama').val(jns_barang_nama);
                 modal.find('#tgl_entry').val(tgl_entry);
 
                 modal.find('.modal-body form').attr('action', '{{ url('jenis-barang') }}/' +
-                    jns_brg_kode); // Sesuaikan action form
-                modal.find('#method').html('@method('PATCH')'); // Menambahkan method PATCH untuk edit
-            } else { // Jika mode adalah tambah
+                    jns_brg_kode);
+                modal.find('#method').html('@method('PATCH')');
+            } else {
                 modal.find('.modal-title').text('Input Data Jenis Barang');
-                modal.find('#jns_barang_nama').val(''); // Reset input jika tambah
+                modal.find('#jns_barang_nama').val('');
                 modal.find('#tgl_entry').val('');
-                modal.find('#method').html(''); // Kosongkan method karena hanya POST untuk tambah
+                modal.find('#method').html('');
                 modal.find('.modal-body form').attr('action',
-                    '{{ url('jenis-barang') }}'); // Sesuaikan action form untuk tambah
+                    '{{ url('jenis-barang') }}');
             }
         });
 
-        // Handle delete button click
         $(document).on('click', '[data-toggle="modal"][data-target="#deleteModal"]', function() {
             var barangKode = $(this).data('id');
             $('#deleteForm').attr('action', '/jenis-barang/' + barangKode);

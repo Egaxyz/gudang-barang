@@ -37,7 +37,7 @@ public function store(StoreJenisBarangRequest $request)
     $jenisBarang->tgl_entry = $request->tgl_entry;
     $jenisBarang->save();
 
-    return redirect('jenis-barang')->with('success', 'Data berhasil ditambahkan');
+    return redirect('jenis-barang')->with('success', 'Data Berhasil Ditambahkan');
 }
 
 
@@ -72,7 +72,7 @@ public function store(StoreJenisBarangRequest $request)
         $jenisBarang->tgl_entry = $request->tgl_entry;
         $jenisBarang->save();
 
-            return redirect('jenis-barang')->with('success', 'Data berhasil diperbarui');
+            return redirect('jenis-barang')->with('success', 'Data Berhasil Diperbarui');
     }
 
     /**
@@ -93,6 +93,6 @@ public function destroy($jns_brg_kode)
         // Hapus data
         $jenisBarang->delete();
 
-        return redirect('jenis-barang');
+        return redirect('jenis-barang')->with('success', 'Data Berhasil Dihapus');
     }
     }

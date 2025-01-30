@@ -43,7 +43,7 @@ class Barang extends Controller
         $barang->br_status = $request->br_status;
         $barang->save();
 
-                return redirect('barang')->with('success', 'Data berhasil ditambahkan');
+                return redirect('barang')->with('success', 'Data Berhasil Ditambahkan');
     }
 
     /**
@@ -133,7 +133,7 @@ public function barang_belum_kembali(Request $request)
     $barang->br_status = $request->br_status;
     $barang->save();
 
-    return redirect('barang')->with('success', 'Data berhasil diperbarui');
+    return redirect('barang')->with('success', 'Data Berhasil Diperbarui');
 }
 
 
@@ -155,6 +155,6 @@ public function barang_belum_kembali(Request $request)
         // Hapus data
         $barang->delete();
 
-                return redirect('barang')->with('success', 'Data berhasil dihapus');
+                return redirect('barang')->with('success', 'Data Berhasil Dihapus');
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePenggunaRequest;
 use App\Models\Pengguna;
 use Illuminate\Http\Request;
 
@@ -17,7 +18,7 @@ class UserController extends Controller
         return view('SuperUser/Pengguna.index')->with($data);
     }
 
-    public function store(Request $request)
+    public function store(StorePenggunaRequest $request)
     {
         $validated = $request->validate([
             'user_nama' => 'required|max:50',
@@ -31,11 +32,7 @@ class UserController extends Controller
 
         $pengguna = Pengguna::create($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Pengguna berhasil disimpan',
-            'data' => $pengguna,
-        ], 201);
+            return redirect('pengguna')->with('success', 'Data Berhasil Ditambahkan');
     }
 
     /**
@@ -80,11 +77,7 @@ class UserController extends Controller
         $pengguna->user_sts = $request->user_sts;
         $pengguna->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data berhasil diupdate',
-            'data' => $pengguna
-        ]);
+            return redirect('pengguna')->with('success', 'Data Berhasil Diperbarui');
     }
 
     /**
@@ -105,9 +98,6 @@ public function destroy($pengguna_id)
         // Hapus data
         $pengguna->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data berhasil dihapus'
-        ]);
+            return redirect('pengguna')->with('success', 'Data Berhasil Dihapus');
     }
 }

@@ -1,6 +1,5 @@
 @extends('templates.header')
 @push('style')
-    <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
@@ -20,7 +19,7 @@
         <div class="card">
             <div class="card-header">
                 <button class="btn bg-primary" type="button" data-toggle="modal" data-target="#formModal"><i
-                        class="fas fa-plus-square"></i> Data Barang</button>
+                        class="fas fa-plus-square"></i> Tambah Data Barang</button>
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="collapse">
@@ -106,7 +105,6 @@
         </div>
     </div>
 
-    <!-- Modal Hapus Data -->
     <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -137,41 +135,36 @@
     <script>
         $('#formModal').on('show.bs.modal', function(e) {
             const btn = $(e.relatedTarget);
-            const mode = btn.data('mode'); // Menentukan apakah mode edit atau tambah
+            const mode = btn.data('mode');
             const br_kode = btn.data('id');
             const jns_barang_nama = btn.data('jenis');
             const nama_perusahaan = btn.data('asal');
             const br_tgl_terima = btn.data('terima');
             const br_tgl_entry = btn.data('entry');
-            const br_status = btn.data('status'); // Ambil data br_status
+            const br_status = btn.data('status');
             const modal = $(this);
 
-            // Cek jika mode adalah edit
             if (mode == 'edit') {
                 modal.find('.modal-title').text('Edit Data Barang');
-                modal.find('#br_kode').val(br_kode); // Set kode barang
-                modal.find('#br_tgl_terima').val(br_tgl_terima); // Set tanggal terima
-                modal.find('#jns_brg_kode').val(jns_barang_nama); // Update correct value for 'Jenis Barang'
-                modal.find('#id_asal_br').val(nama_perusahaan); // Update correct value for 'Asal Barang'
-                modal.find('#br_tgl_entry').val(br_tgl_entry); // Set tanggal entry
-                modal.find('#br_status').val(br_status); // Set status
+                modal.find('#br_kode').val(br_kode);
+                modal.find('#br_tgl_terima').val(br_tgl_terima);
+                modal.find('#jns_brg_kode').val(jns_barang_nama);
+                modal.find('#id_asal_br').val(nama_perusahaan);
+                modal.find('#br_tgl_entry').val(br_tgl_entry);
+                modal.find('#br_status').val(br_status);
                 modal.find('.modal-body form').attr('action', '{{ url('barang') }}/' + br_kode);
                 modal.find('#method').html('@method('PATCH')');
-            } else { // For 'Tambah' mode
+            } else {
                 modal.find('.modal-title').text('Input Data Barang');
                 modal.find('#br_tgl_terima').val('');
-                modal.find('#jns_brg_kode').val(''); // Clear value for 'Jenis Barang'
-                modal.find('#id_asal_br').val(''); // Clear value for 'Asal Barang'
+                modal.find('#jns_brg_kode').val('');
+                modal.find('#id_asal_br').val('');
                 modal.find('#br_tgl_entry').val('');
-                modal.find('#br_status').val('1'); // Default status 'Baik'
+                modal.find('#br_status').val('1');
                 modal.find('#method').html('');
                 modal.find('.modal-body form').attr('action', '{{ url('barang') }}');
             }
-
         });
-
-
-
 
         $(document).on('click', '[data-toggle="modal"][data-target="#deleteModal"]', function() {
             var barangKode = $(this).data('id');
@@ -191,7 +184,6 @@
     <script src="{{ asset('assets') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="{{ asset('assets') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
     <script src="{{ asset('assets') }}/plugins/sweetalert2/sweetalert2.min.js"></script>
-    <!-- Page specific script -->
     <script>
         $(function() {
             $("#example1").DataTable({
