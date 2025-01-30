@@ -41,7 +41,7 @@ class Barang_Asal_Controller extends Controller
         $request->validate([
             'nama_perusahaan' => 'required',
             'jumlah_kirim' => 'required',
-            'tgl_entry' => 'required',
+            'tgl_kirim' => 'required',
         ]);
 
         return redirect('asal-barang')->with('success', 'Data berhasil ditambahkan');
@@ -82,7 +82,7 @@ class Barang_Asal_Controller extends Controller
         $asalbarang->tgl_kirim = $request->tgl_kirim;
         $asalbarang->save();
 
-        return redirect('asal-barang');
+        return redirect('asal-barang')->with('success', 'Data Berhasil Diperbarui');
     }
 
     /**

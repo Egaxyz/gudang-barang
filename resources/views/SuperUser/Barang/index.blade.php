@@ -13,7 +13,6 @@
                 <div class="row mb-2">
                     <div class="col-sm-6">
                         <h1>Barang Inventaris</h1>
-                        <p>Status Barang: 1 = kondisi baik 0 = barang dihapus</p>
                     </div>
                 </div>
             </div>
@@ -33,6 +32,26 @@
                 </div>
             </div>
             <div class="card-body">
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                            &times;</button>
+                        <h5><i class="icon fas fa-check"></i>Sukses!</h5>
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if ($errors->any())
+                    <div class="alert alert-success alert-dismissible">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+                            x</button>
+                        <h5><i class="icon fas fa-ban"></i>Data Gagal Disimpan!</h5>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
@@ -53,10 +72,29 @@
                                 <td>{{ $barang->asalBarang->nama_perusahaan ?? 'Unknown' }}</td>
                                 <td>{{ $barang->br_tgl_terima }}</td>
                                 <td>{{ $barang->br_tgl_entry }}</td>
-                                <td>{{ $barang->br_status }}</td>
+                                <td>
+                                    @if ($barang->br_status == 0)
+                                        <span class="badge badge-danger">Dihapus</span>
+                                    @elseif ($barang->br_status == 1)
+                                        <span class="badge badge-success">Baik</span>
+                                    @elseif ($barang->br_status == 2)
+                                        <span class="badge badge-warning">Rusak (Bisa Diperbaiki)</span>
+                                    @elseif ($barang->br_status == 3)
+                                        <span class="badge badge-dark">Rusak (Tidak Bisa Digunakan)</span>
+                                    @else
+                                        <span class="badge badge-secondary">Status Tidak Diketahui</span>
+                                    @endif
+                                </td>
+
                                 <td>
                                     <button class="btn btn-success" type="button" data-toggle="modal"
-                                        data-target="#formModal" data-mode="edit">Edit</button>
+                                        data-target="#formModal" data-mode="edit" data-id="{{ $barang->br_kode }}"
+                                        data-terima="{{ $barang->br_tgl_terima }}"
+                                        data-jenis="{{ $barang->jenisBarang->jns_brg_kode }}"
+                                        data-asal="{{ $barang->asalBarang->id_asal_br }}"
+                                        data-entry="{{ $barang->br_tgl_entry }}"
+                                        data-status="{{ $barang->br_status }}">Edit</button>
+
                                     <button class="btn btn-danger" type="button" data-toggle="modal"
                                         data-target="#deleteModal" data-id="{{ $barang->br_kode }}">Delete</button>
                                 </td>
@@ -97,6 +135,44 @@
 @endsection
 @push('script')
     <script>
+        $('#formModal').on('show.bs.modal', function(e) {
+            const btn = $(e.relatedTarget);
+            const mode = btn.data('mode'); // Menentukan apakah mode edit atau tambah
+            const br_kode = btn.data('id');
+            const jns_barang_nama = btn.data('jenis');
+            const nama_perusahaan = btn.data('asal');
+            const br_tgl_terima = btn.data('terima');
+            const br_tgl_entry = btn.data('entry');
+            const br_status = btn.data('status'); // Ambil data br_status
+            const modal = $(this);
+
+            // Cek jika mode adalah edit
+            if (mode == 'edit') {
+                modal.find('.modal-title').text('Edit Data Barang');
+                modal.find('#br_kode').val(br_kode); // Set kode barang
+                modal.find('#br_tgl_terima').val(br_tgl_terima); // Set tanggal terima
+                modal.find('#jns_brg_kode').val(jns_barang_nama); // Update correct value for 'Jenis Barang'
+                modal.find('#id_asal_br').val(nama_perusahaan); // Update correct value for 'Asal Barang'
+                modal.find('#br_tgl_entry').val(br_tgl_entry); // Set tanggal entry
+                modal.find('#br_status').val(br_status); // Set status
+                modal.find('.modal-body form').attr('action', '{{ url('barang') }}/' + br_kode);
+                modal.find('#method').html('@method('PATCH')');
+            } else { // For 'Tambah' mode
+                modal.find('.modal-title').text('Input Data Barang');
+                modal.find('#br_tgl_terima').val('');
+                modal.find('#jns_brg_kode').val(''); // Clear value for 'Jenis Barang'
+                modal.find('#id_asal_br').val(''); // Clear value for 'Asal Barang'
+                modal.find('#br_tgl_entry').val('');
+                modal.find('#br_status').val('1'); // Default status 'Baik'
+                modal.find('#method').html('');
+                modal.find('.modal-body form').attr('action', '{{ url('barang') }}');
+            }
+
+        });
+
+
+
+
         $(document).on('click', '[data-toggle="modal"][data-target="#deleteModal"]', function() {
             var barangKode = $(this).data('id');
             $('#deleteForm').attr('action', '/barang/' + barangKode);

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('id_asal_br',10);
             $table->date('br_tgl_terima');
             $table->date('br_tgl_entry');
-            $table->enum('br_status', ['0','1']);
+            $table->enum('br_status', ['0','1','2','3']);
 
             $table->foreign('jns_brg_kode')->references('jns_brg_kode')->on('jenis_barang');
             $table->foreign('user_id')->references('user_id')->on('pengguna');

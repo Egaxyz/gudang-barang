@@ -24,7 +24,7 @@ class StoreAsalBarangRequest extends FormRequest
         return [
             'nama_perusahaan'=>'required',
             'jumlah_kirim'=>'required',
-            'tgl_entry'=>'required'
+            'tgl_kirim'=>'required'
         ];
     }
 }

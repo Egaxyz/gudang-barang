@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreBarangRequest;
+use App\Models\asal_barang;
+use App\Models\jenis_barang;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\barang_inventaris;
@@ -11,9 +14,8 @@ class Barang extends Controller
     /**
      * Menyimpan data barang inventaris baru.
      */
-    public function store(Request $request)
+    public function store(StoreBarangRequest $request)
     {
-        
         // Dapatkan tahun saat ini
         $tahun = Carbon::now()->format('Y');
 
@@ -35,17 +37,13 @@ class Barang extends Controller
         $barang->br_kode = $kodeBarangBaru;
         $barang->id_asal_br = $request->id_asal_br;
         $barang->jns_brg_kode = $request->jns_brg_kode;
-        $barang->user_id = $request->user_id;
+        $barang->user_id = 1;
         $barang->br_tgl_terima = $request->br_tgl_terima;
-        $barang->br_tgl_entry = now();
+        $barang->br_tgl_entry = $request->br_tgl_entry;
         $barang->br_status = $request->br_status;
         $barang->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data berhasil disimpan',
-            'data' => $barang
-        ]);
+                return redirect('barang')->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -53,22 +51,22 @@ class Barang extends Controller
      */
 public function index(Request $request)
 {
-    // Tahun default adalah tahun sekarang
     $tahun = $request->input('tahun', Carbon::now()->format('Y'));
 
-    // Ambil data berdasarkan tahun dari kolom br_tgl_entry (untuk laporan)
-    $dataByYear = barang_inventaris::whereYear('br_tgl_entry', $tahun)
-        ->orderBy('br_kode', 'asc')
-        ->get();
-
-    // Mengambil seluruh data barang dan relasi dengan jenisBarang dan asalBarang
+    // Ambil data barang inventaris
     $barangInventaris = barang_inventaris::with('jenisBarang', 'asalBarang')->get();
 
-    // Mengirim data ke view sesuai route yang dipanggil
+    // Ambil data asal barang & jenis barang
+    $asal_barang = asal_barang::all();
+    $jenis_barang = jenis_barang::all();
+
     return view('SuperUser/Barang/index', [
-        'barang_inventaris' => $barangInventaris
+        'barang_inventaris' => $barangInventaris,
+        'asal_barang' => $asal_barang,
+        'jenis_barang' => $jenis_barang
     ]);
 }
+
 
 // Untuk laporan barang
 public function laporan(Request $request)
@@ -122,30 +120,22 @@ public function barang_belum_kembali(Request $request)
     ]);
 }
 
-    public function update(Request $request, $br_kode)
-    {
-        // Cari data berdasarkan br_kode
-        $barang = barang_inventaris::find($br_kode);
+   public function update(Request $request, $br_kode)
+{
+    // Cari data berdasarkan br_kode menggunakan model barang_inventaris
+    $barang = barang_inventaris::findOrFail($br_kode);
 
-        if (!$barang) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data tidak ditemukan'
-            ], 404);
-        }
+    // Update data
+    $barang->id_asal_br = $request->id_asal_br;
+    $barang->jns_brg_kode = $request->jns_brg_kode;
+    $barang->br_tgl_terima = $request->br_tgl_terima;
+    $barang->br_tgl_entry = $request->br_tgl_entry;
+    $barang->br_status = $request->br_status;
+    $barang->save();
 
-        // Update data
-        $barang->br_tgl_terima = $request->br_tgl_terima;
-        $barang->br_tgl_entry = now();
-        $barang->br_status = $request->br_status;
-        $barang->save();
+    return redirect('barang')->with('success', 'Data berhasil diperbarui');
+}
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Data berhasil diupdate',
-            'data' => $barang
-        ]);
-    }
 
     /**
      * Menghapus data barang inventaris.
@@ -165,6 +155,6 @@ public function barang_belum_kembali(Request $request)
         // Hapus data
         $barang->delete();
 
-        return view('SuperUser/barang.index');
+                return redirect('barang')->with('success', 'Data berhasil dihapus');
     }
 }

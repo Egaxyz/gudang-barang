@@ -18,12 +18,6 @@ class barang_inventaris extends Model
         'br_status'
     ];
 
-    protected function casts(): array
-    {
-        return [
-        'br_tgl_terima' => 'datetime:Y-m-d',
-        ];
-    }
 
       public function jenisBarang()
     {

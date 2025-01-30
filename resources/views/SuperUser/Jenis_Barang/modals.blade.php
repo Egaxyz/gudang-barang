@@ -13,7 +13,8 @@
                     <div id="method"></div>
                     <div class="form-group row">
                         <label for="jns_barang_nama">Nama Jenis Barang</label>
-                        <input type="text" class="form-control" id="jns_barang_nama" name="jns_barang_nama" required>
+                        <input type="text" class="form-control" autocomplete="off" id="jns_barang_nama"
+                            name="jns_barang_nama" required>
                     </div>
                     <div class="form-group row">
                         <label for="tgl_entry">Tanggal Entry</label>

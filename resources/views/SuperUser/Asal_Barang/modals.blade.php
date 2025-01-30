@@ -13,11 +13,13 @@
                     <div id="method"></div>
                     <div class="form-group row">
                         <label for="nama_perusahaan">Nama Perusahaan</label>
-                        <input type="text" class="form-control" id="nama_perusahaan" name="nama_perusahaan" required>
+                        <input type="text" class="form-control" autocomplete="off" id="nama_perusahaan"
+                            name="nama_perusahaan" required>
                     </div>
                     <div class="form-group row">
                         <label for="jumlah_kirim">Jumlah Kirim</label>
-                        <input type="text" class="form-control" id="jumlah_kirim" name="jumlah_kirim" required>
+                        <input type="text" class="form-control" autocomplete="off" id="jumlah_kirim"
+                            name="jumlah_kirim" required>
                     </div>
                     <div class="form-group row">
                         <label for="tgl_kirim">Tanggal Kirim</label>
