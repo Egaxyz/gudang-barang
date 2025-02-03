@@ -82,8 +82,16 @@ class PeminjamanCotroller extends Controller
         $bulan = $request->input('bulan',Carbon::now()->format('m'));
         // Ambil data berdasarkan tahun dari kolom br_tgl_entry
         $data['peminjaman'] = peminjaman::get();
+        $user = auth()->user();
 
-        return view('SuperUser/Peminjaman.index')->with($data);
+        if ($user->role == 'superuser'){
+            return view('superuser/Peminjaman/index', $data);
+        } elseif($user->role == 'admin'){
+            return view('admin/Peminjaman/index', $data);
+        } else{
+            return view('user/Peminjaman/index', $data);
+        }
+      
     }
         /**
      * Update data peminjaman berdasarkan pb_id.

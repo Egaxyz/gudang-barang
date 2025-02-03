@@ -1,4 +1,4 @@
-@extends('templates.header')
+@extends('SuperUser.templates_superuser.header')
 @section('content')
     <div class="content-wrapper">
         <section class="content-header">

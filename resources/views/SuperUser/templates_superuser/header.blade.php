@@ -226,7 +226,7 @@
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-file-alt"></i>
                                 <p>
-                                    Laporan Barang
+                                    Laporan
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -281,7 +281,7 @@
 
                         <!-- Menu Logout -->
                         <li class="nav-item">
-                            <a href="" class="nav-link">
+                            <a href="{{ route('logout') }}" class="nav-link">
                                 <i class="nav-icon far fa-circle text-danger"></i>
                                 <p>Logout</p>
                             </a>
@@ -299,4 +299,4 @@
         <section class="content">
             @yield('content')
         </section>
-        @include('templates.footer')
+        @include('SuperUser.templates_superuser.footer')

@@ -1,4 +1,4 @@
-@extends('templates.header')
+@extends('SuperUser.templates_superuser.header')
 @push('style')
     <!-- DataTables -->
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">

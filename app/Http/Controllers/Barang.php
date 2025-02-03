@@ -37,7 +37,7 @@ class Barang extends Controller
         $barang->br_kode = $kodeBarangBaru;
         $barang->id_asal_br = $request->id_asal_br;
         $barang->jns_brg_kode = $request->jns_brg_kode;
-        $barang->user_id = 1;
+        $barang->user_id = $request->user_id;
         $barang->br_tgl_terima = $request->br_tgl_terima;
         $barang->br_tgl_entry = $request->br_tgl_entry;
         $barang->br_status = $request->br_status;
@@ -53,18 +53,33 @@ public function index(Request $request)
 {
     $tahun = $request->input('tahun', Carbon::now()->format('Y'));
 
-    // Ambil data barang inventaris
+    // Ambil data barang i nventaris
     $barangInventaris = barang_inventaris::with('jenisBarang', 'asalBarang')->get();
-
+    
     // Ambil data asal barang & jenis barang
     $asal_barang = asal_barang::all();
     $jenis_barang = jenis_barang::all();
-
-    return view('SuperUser/Barang/index', [
-        'barang_inventaris' => $barangInventaris,
-        'asal_barang' => $asal_barang,
-        'jenis_barang' => $jenis_barang
-    ]);
+    $user = auth()->user();
+    
+     if ($user->role == 'superuser') {
+        return view('superuser/Barang/index', [
+            'barang_inventaris' => $barangInventaris,
+            'asal_barang' => $asal_barang,
+            'jenis_barang' => $jenis_barang,
+        ]);
+    } elseif ($user->role == 'admin') {
+        return view('admin/Barang/index', [
+            'barang_inventaris' => $barangInventaris,
+            'asal_barang' => $asal_barang,
+            'jenis_barang' => $jenis_barang,
+        ]);
+    } else {
+        return view('user/Barang/index', [
+            'barang_inventaris' => $barangInventaris,
+            'asal_barang' => $asal_barang,
+            'jenis_barang' => $jenis_barang,
+        ]);
+    }
 }
 
 
@@ -90,10 +105,20 @@ public function laporan(Request $request)
         ->get();
 
     // Kirim data ke view laporan barang dengan tampilan yang lebih khusus
-    return view('SuperUser/Laporan_Barang/index', [
-        'dataByYear' => $dataByYear,
-        'barang_inventaris' => $barangInventaris
-    ]);
+
+    $user = auth()->user();
+    
+     if ($user->role == 'superuser') {
+        return view('superuser/Laporan_Barang/index', [
+            'dataByYear' => $dataByYear,
+            'barang_inventaris' => $barangInventaris,
+        ]);
+    } else {
+        return view('admin/Laporan_Barang/index', [
+            'dataByYear' => $dataByYear,
+            'barang_inventaris' => $barangInventaris,
+        ]);
+    }
 }
 public function barang_belum_kembali(Request $request)
 {
@@ -112,12 +137,24 @@ public function barang_belum_kembali(Request $request)
    ->where('peminjaman_barang.pdb_sts', 'dipinjam') // Filter hanya barang dengan status 'dipinjam'
    ->get();
 
-
-    // Kirim data ke view laporan barang dengan tampilan yang lebih khusus
-    return view('SuperUser/Barang_Belum_Kembali/index', [
-        'dataByYear' => $dataByYear,
-        'barang_inventaris' => $barangInventaris
-    ]);
+    $user = auth()->user();
+    
+     if ($user->role == 'superuser'){
+        return view('superuser/Barang_Belum_Kembali/index', [
+            'dataByYear' => $dataByYear,
+            'barang_inventaris' => $barangInventaris,
+        ]);
+    } elseif($user->role == 'admin') {
+        return view('admin/Barang_Belum_Kembali/index', [
+            'dataByYear' => $dataByYear,
+            'barang_inventaris' => $barangInventaris,
+        ]);
+    } else {
+        return view('user/Barang_Belum_Kembali/index', [
+            'dataByYear' => $dataByYear,
+            'barang_inventaris' => $barangInventaris,
+        ]);
+    }
 }
 
    public function update(Request $request, $br_kode)

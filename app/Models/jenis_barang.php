@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Traits\HasRoles;
 
 class jenis_barang extends Model
 {
-    use HasFactory;
+    use HasFactory, HasRoles;
 
     public $timestamps = false;
     public $incrementing = false;

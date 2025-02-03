@@ -58,7 +58,13 @@ class Barang_Asal_Controller extends Controller
         // Ambil data berdasarkan tahun dari kolom tgl_kirim
         $data['asal_barang'] = asal_barang::get();
 
-        return view('SuperUser/Asal_Barang.index')->with($data);
+        $user = auth()->user();
+
+        if ($user->role == 'superuser') {
+            return view('superuser/Asal_Barang/index', $data);
+        } else  {
+            return view('user/Asal_Barang/index', $data);
+        }
     }
 
     /**

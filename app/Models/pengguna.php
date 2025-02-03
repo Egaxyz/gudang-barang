@@ -2,24 +2,18 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Traits\HasRoles;
 
 class Pengguna extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasRoles;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
     protected $table = "pengguna";
-    public $incrementing = false;
-    public $primaryKey = "user_id";
+    protected $primaryKey = "user_id";
 
     protected $fillable = [
         'user_nama',
@@ -29,4 +23,20 @@ class Pengguna extends Authenticatable
     ];
 
     public $timestamps = false;
+
+    /**
+     * Set password agar selalu di-hash saat disimpan
+     */
+    public function setUserPassAttribute($value)
+    {
+        $this->attributes['user_pass'] = Hash::needsRehash($value) ? Hash::make($value) : $value;
+    }
+
+    /**
+     * Mengecek apakah pengguna aktif
+     */
+    public function isActive()
+    {
+        return $this->user_sts == 1;
+    }
 }

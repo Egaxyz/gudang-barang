@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Permission\Traits\HasRoles;
 
 class asal_barang extends Model
 {
-    use HasFactory;
+    use HasFactory, HasRoles;
 
     protected $table = 'asal_barang';
     protected $primaryKey = 'id_asal_br';

@@ -77,9 +77,19 @@ class PengembalianController extends Controller
     {
         $tahun = $request->input('tahun', Carbon::now()->format('Y'));
         // Ambil data berdasarkan tahun dari kolom br_tgl_entry
-       $data['pengembalian'] = pengembalian::get();
+        $data['pengembalian'] = pengembalian::get();
+        $user = auth()->user();
 
-        return view('SuperUser/Laporan_Pengembalian.index')->with($data);
+        if ($user->role == 'superuser') {
+            return view('superuser/Laporan_Pengembalian/index', $data
+, $data);
+        } elseif($user->role == 'user')  {
+            return view('user/Laporan_Pengembalian/index', $data
+, $data);
+        } else{
+            return view('admin/Laporan_Pengembalian/index', $data
+, $data);
+        }
     }
 
     /**

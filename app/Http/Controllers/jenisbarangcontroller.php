@@ -48,8 +48,15 @@ public function store(StoreJenisBarangRequest $request)
     {
         // Ambil semua data jenis barang
         $data['jenis_barang'] = jenis_barang::get();
+        $user = auth()->user();
 
-        return view('SuperUser/Jenis_Barang.index')->with($data);
+        if ($user->role == 'superuser') {
+            return view('superuser/Jenis_Barang/index', $data);
+        } elseif($user->role == 'user') {
+            return view('user/Jenis_Barang/index', $data);
+        } else{
+            return view('admin/Jenis_Barang/index', $data);
+        }
     }
 
     /**
