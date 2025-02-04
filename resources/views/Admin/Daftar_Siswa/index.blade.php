@@ -1,4 +1,4 @@
-@extends('SuperUser.templates_superuser.header')
+@extends('Admin.templates_admin.header')
 @push('style')
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
@@ -123,7 +123,7 @@
             </div>
         </div>
     </div>
-    @include('SuperUser/Daftar_Siswa/modals')
+    @include('Admin/Daftar_Siswa/modals')
 @endsection
 
 @push('script')
@@ -150,7 +150,7 @@
                 modal.find('#no_konsentrasi').val(no_konsentrasi_id);
                 modal.find('#nis').val(nis);
                 modal.find('#no_hp').val(no_hp);
-                modal.find('.modal-body form').attr('action', '{{ url('/superuser/siswa') }}/' + siswa_id);
+                modal.find('.modal-body form').attr('action', '{{ url('/admin/siswa') }}/' + siswa_id);
                 modal.find('#method').html('@method('PATCH')');
             } else {
                 modal.find('.modal-title').text('Input Data Siswa');
@@ -162,14 +162,14 @@
                 modal.find('#nis').val('');
                 modal.find('#no_hp').val('');
                 modal.find('#method').html('');
-                modal.find('.modal-body form').attr('action', '{{ url('/superuser/siswa') }}');
+                modal.find('.modal-body form').attr('action', '{{ url('/admin/siswa') }}');
             }
         });
 
 
         $(document).on('click', '[data-toggle="modal"][data-target="#deleteModal"]', function() {
             var userId = $(this).data('id');
-            $('#deleteForm').attr('action', '/superuser/siswa/' + userId);
+            $('#deleteForm').attr('action', '/admin/siswa/' + userId);
         });
     </script>
 @endpush

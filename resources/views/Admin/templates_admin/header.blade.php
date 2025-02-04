@@ -213,6 +213,12 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
+                                    <a href="siswa" class="nav-link">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Daftar Siswa</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="pengguna" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Kelas</p>

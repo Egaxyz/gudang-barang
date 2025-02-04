@@ -19,4 +19,12 @@ class siswa extends Model
         'kelas_id',
         'jurusan_id'
     ];
+     public function jurusanData()
+    {
+        return $this->belongsTo(jurusan::class, 'jurusan_id', 'jurusan_id');
+    }
+     public function kelasData()
+    {
+        return $this->belongsTo(Kelas::class, 'kelas_id', 'kelas_id');
+    }
 }

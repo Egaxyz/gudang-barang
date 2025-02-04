@@ -200,7 +200,7 @@ Route::middleware(['role:superuser'])->group(function () {
         Route::patch('/superuser/kelas/{id}', [KelasController::class, 'update']);
         Route::delete('/superuser/kelas/{id}', [KelasController::class, 'destroy']);
 
-        Route::get('/superuser/siswa', [SiswaController::class, 'index']);
+        Route::get('/superuser/siswa', [SiswaController::class, 'index'])->name('superuser.siswa');
         Route::post('/superuser/siswa', [SiswaController::class, 'store']);
         Route::patch('/superuser/siswa/{id}', [SiswaController::class, 'update']);
         Route::delete('/superuser/siswa/{id}', [SiswaController::class, 'destroy']);
