@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pengguna;
 use Illuminate\Http\Request;
 use App\Models\Jurusan;
 
@@ -12,13 +13,21 @@ class JurusanController extends Controller
      */
     public function index()
     {
+        $user = auth()->user();
         $jurusan = Jurusan::all();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Daftar jurusan berhasil diambil',
-            'data' => $jurusan,
-        ], 200);
+    if ($user->role == 'superuser'){
+        return view('superuser/Jurusan/index', [
+            'jurusan'=>$jurusan
+        ]);
+    } elseif($user->role == 'admin') {
+        return view('admin/Jurusan/index', [
+            'jurusan'=>$jurusan
+        ]);
+    } else {
+        return view('user/Jurusan/index', [
+            'jurusan'=>$jurusan
+        ]);
+    }
     }
 
     /**
@@ -31,12 +40,18 @@ class JurusanController extends Controller
         ]);
 
         $jurusan = Jurusan::create($validated);
+        $user = auth()->user();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Jurusan berhasil ditambahkan',
-            'data' => $jurusan,
-        ], 201);
+        if ($user->role == 'superuser') {
+        return redirect()->route('superuser.jurusan', ['jurusan' => $jurusan])
+                ->with('success', 'Jurusan berhasil ditambahkan');
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('admin.jurusan', ['jurusan' => $jurusan])
+                ->with('success', 'Jurusan berhasil ditambahkan');
+       } else {
+            abort(403, 'Unauthorized action.');
+        }
+
     }
 
     /**
@@ -49,7 +64,7 @@ class JurusanController extends Controller
         if (!$jurusan) {
             return response()->json([
                 'success' => false,
-                'message' => 'Jurusan tidak ditemukan',
+                'message' => 'Jurusan Tidak Ditemukan',
             ], 404);
         }
 
@@ -66,12 +81,25 @@ class JurusanController extends Controller
     public function update(Request $request, $id)
     {
         $jurusan = Jurusan::find($id);
-
-        if (!$jurusan) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Jurusan tidak ditemukan',
-            ], 404);
+        $user = auth()->user();
+        
+    if (!$jurusan) {
+            if ($user->role == 'superuser') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Jurusan Tidak Ditemukan untuk superuser',
+                ], 404);
+            } elseif ($user->role == 'admin') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Admin Tidak Dapat mengakses jurusan ini',
+                ], 403);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak',
+                ], 403);
+            }
         }
 
         $validated = $request->validate([
@@ -80,11 +108,15 @@ class JurusanController extends Controller
 
         $jurusan->update($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Jurusan berhasil diperbarui',
-            'data' => $jurusan,
-        ], 200);
+        if ($user->role == 'superuser') {
+        return redirect()->route('superuser.jurusan', ['jurusan' => $jurusan])
+                ->with('success', 'Jurusan berhasil dihapus');
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('admin.jurusan', ['jurusan' => $jurusan])
+                ->with('success', 'Jurusan berhasil dihapus');
+       } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     /**
@@ -92,20 +124,37 @@ class JurusanController extends Controller
      */
     public function destroy($id)
     {
+        $user = auth()->user();
         $jurusan = Jurusan::find($id);
 
         if (!$jurusan) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Jurusan tidak ditemukan',
-            ], 404);
+            if ($user->role == 'superuser') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Jurusan Tidak Ditemukan untuk superuser',
+                ], 404);
+            } elseif ($user->role == 'admin') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Admin Tidak Dapat mengakses jurusan ini',
+                ], 403);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak',
+                ], 403);
+            }
         }
-
         $jurusan->delete();
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Jurusan berhasil dihapus',
-        ], 200);
+        
+        if ($user->role == 'superuser') {
+        return redirect()->route('superuser.jurusan', ['jurusan' => $jurusan])
+                ->with('success', 'Jurusan berhasil dihapus');
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('admin.jurusan', ['jurusan' => $jurusan])
+                ->with('success', 'Jurusan berhasil dihapus');
+       } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 }

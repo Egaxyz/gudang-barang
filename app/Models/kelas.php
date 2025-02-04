@@ -19,4 +19,8 @@ class kelas extends Model
         'konsentrasi',
         'jurusan_id'
     ];
+     public function jurusan()
+    {
+        return $this->belongsTo(jurusan::class, 'jurusan_id', 'jurusan_id');
+    }
 }

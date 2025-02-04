@@ -152,7 +152,7 @@
                 modal.find('#id_asal_br').val(nama_perusahaan);
                 modal.find('#br_tgl_entry').val(br_tgl_entry);
                 modal.find('#br_status').val(br_status);
-                modal.find('.modal-body form').attr('action', '{{ url('barang') }}/' + br_kode);
+                modal.find('.modal-body form').attr('action', '{{ url('/superuser/barang') }}/' + br_kode);
                 modal.find('#method').html('@method('PATCH')');
             } else {
                 modal.find('.modal-title').text('Input Data Barang');
@@ -162,13 +162,13 @@
                 modal.find('#br_tgl_entry').val('');
                 modal.find('#br_status').val('1');
                 modal.find('#method').html('');
-                modal.find('.modal-body form').attr('action', '{{ url('barang') }}');
+                modal.find('.modal-body form').attr('action', '{{ url('/superuser/barang') }}');
             }
         });
 
         $(document).on('click', '[data-toggle="modal"][data-target="#deleteModal"]', function() {
             var barangKode = $(this).data('id');
-            $('#deleteForm').attr('action', '/barang/' + barangKode);
+            $('#deleteForm').attr('action', '/superuser/barang/' + barangKode);
         });
     </script>
 @endpush

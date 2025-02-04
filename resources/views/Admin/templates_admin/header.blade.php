@@ -165,7 +165,7 @@
         <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
-        <aside class="main-sidebar sidebar-dark-primary elevation-4 min-vh-100">
+        <aside class="main-sidebar sidebar-dark-primary elevation-4 max-vh-100">
             <!-- Brand Logo -->
             <a href="{{ asset('assets') }}/index3.html" class="brand-link">
                 <img src="{{ asset('assets') }}/dist/img/AdminLTELogo.png" alt="AdminLTE Logo"
@@ -192,7 +192,7 @@
                         <!-- Group Barang -->
                         <li class="nav-item">
                             <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-cogs"></i>
+                                <i class="nav-icon fas fa-book"></i>
                                 <p>
                                     Referensi
                                     <i class="right fas fa-angle-left"></i>
@@ -208,19 +208,19 @@
                                 </li>
                                 <li class="nav-item">
                                     <a href="pengguna" class="nav-link">
-                                        <i class="nav-icon fas fa-users"></i>
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Pengguna</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="pengguna" class="nav-link">
-                                        <i class="nav-icon fas fa-users"></i>
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Kelas</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="pengguna" class="nav-link">
-                                        <i class="nav-icon fas fa-users"></i>
+                                        <i class="far fa-circle nav-icon"></i>
                                         <p>Jurusan</p>
                                     </a>
                                 </li>

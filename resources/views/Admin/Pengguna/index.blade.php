@@ -114,7 +114,7 @@
             </div>
         </div>
     </div>
-    @include('SuperUser/Pengguna/modals')
+    @include('Admin/Pengguna/modals')
 @endsection
 
 @push('script')
@@ -134,7 +134,7 @@
                 modal.find('#user_nama').val(user_nama);
                 modal.find('#role').val(role);
                 modal.find('#user_sts').val(user_sts)
-                modal.find('.modal-body form').attr('action', '{{ url('pengguna') }}/' +
+                modal.find('.modal-body form').attr('action', '{{ url('/admin/pengguna') }}/' +
                     user_id);
                 modal.find('#method').html('@method('PATCH')');
                 modal.find('#passwordField').hide();
@@ -147,7 +147,7 @@
                 modal.find('#user_sts').val('1');
                 modal.find('#method').html('');
                 modal.find('.modal-body form').attr('action',
-                    '{{ url('pengguna') }}');
+                    '{{ url('/admin/pengguna') }}');
 
                 modal.find('#passwordField').show();
                 modal.find('#user_pass').attr('required', true);
@@ -156,7 +156,7 @@
 
         $(document).on('click', '[data-toggle="modal"][data-target="#deleteModal"]', function() {
             var userId = $(this).data('id');
-            $('#deleteForm').attr('action', '/pengguna/' + userId);
+            $('#deleteForm').attr('action', '/admin/pengguna/' + userId);
         });
     </script>
 @endpush

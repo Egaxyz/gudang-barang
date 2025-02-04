@@ -37,13 +37,25 @@ class Barang extends Controller
         $barang->br_kode = $kodeBarangBaru;
         $barang->id_asal_br = $request->id_asal_br;
         $barang->jns_brg_kode = $request->jns_brg_kode;
-        $barang->user_id = $request->user_id;
+        $barang->user_id = auth()->id();
         $barang->br_tgl_terima = $request->br_tgl_terima;
         $barang->br_tgl_entry = $request->br_tgl_entry;
         $barang->br_status = $request->br_status;
         $barang->save();
 
-                return redirect('barang')->with('success', 'Data Berhasil Ditambahkan');
+        $user = auth()->user();
+           if ($user->role == 'superuser') {
+        return redirect()->route('superuser.barang')
+                ->with('success', 'Barang Berhasil Ditambahkan');
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('admin.barang')
+                ->with('success', 'Barang Berhasil Ditambahkan');
+       } elseif($user->role=='user'){
+            return redirect()->route('user.barang')
+                ->with('success', 'Barang Berhasil Ditambahkan');
+       }else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     /**
@@ -162,6 +174,30 @@ public function barang_belum_kembali(Request $request)
     // Cari data berdasarkan br_kode menggunakan model barang_inventaris
     $barang = barang_inventaris::findOrFail($br_kode);
 
+            $user = auth()->user();
+        if (!$barang) {
+            if ($user->role == 'superuser') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Barang Tidak Ditemukan',
+                ], 404);
+            } elseif ($user->role == 'admin') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Barang Tidak Ditemukan',
+                ], 403);
+            } elseif($user->role=='user'){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Barang Tidak Ditemukan'
+                ], 403);
+            }else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak',
+                ], 403);
+            }
+        }
     // Update data
     $barang->id_asal_br = $request->id_asal_br;
     $barang->jns_brg_kode = $request->jns_brg_kode;
@@ -170,7 +206,19 @@ public function barang_belum_kembali(Request $request)
     $barang->br_status = $request->br_status;
     $barang->save();
 
-    return redirect('barang')->with('success', 'Data Berhasil Diperbarui');
+ $user = auth()->user();
+           if ($user->role == 'superuser') {
+        return redirect()->route('superuser.barang')
+                ->with('success', 'Barang Berhasil Diperbarui');
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('admin.barang')
+                ->with('success', 'Barang Berhasil Diperbarui');
+       } elseif($user->role=='user'){
+            return redirect()->route('user.barang')
+                ->with('success', 'Barang Berhasil Diperbarui');
+       }else {
+            abort(403, 'Unauthorized action.');
+        }
 }
 
 
@@ -182,16 +230,44 @@ public function barang_belum_kembali(Request $request)
         // Cari data berdasarkan br_kode
         $barang = barang_inventaris::find($br_kode);
 
+        $user = auth()->user();
         if (!$barang) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data tidak ditemukan'
-            ], 404);
+            if ($user->role == 'superuser') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Barang Tidak Ditemukan',
+                ], 404);
+            } elseif ($user->role == 'admin') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Barang Tidak Ditemukan',
+                ], 403);
+            } elseif($user->role=='user'){
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Barang Tidak Ditemukan'
+                ], 403);
+            }else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak',
+                ], 403);
+            }
         }
 
         // Hapus data
         $barang->delete();
-
-                return redirect('barang')->with('success', 'Data Berhasil Dihapus');
+           if ($user->role == 'superuser') {
+        return redirect()->route('superuser.barang')
+                ->with('success', 'Barang Berhasil Dihapus');
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('admin.barang')
+                ->with('success', 'Barang Berhasil Dihapus');
+       } elseif($user->role=='user'){
+            return redirect()->route('user.barang')
+                ->with('success', 'Barang Berhasil Dihapus');
+       }else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 }

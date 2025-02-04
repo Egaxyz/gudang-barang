@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\jurusan;
 use Illuminate\Http\Request;
 use App\Models\kelas;
 
@@ -12,13 +13,23 @@ class KelasController extends Controller
      */
     public function index()
     {
-        $kelas = kelas::all();
+        $jurusan = jurusan::all();
+        $user = auth()->user();
+        $kelas = kelas::with('jurusan')->get();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Daftar kelas berhasil diambil',
-            'data' => $kelas,
-        ], 200);
+        if ($user->role == 'superuser'){
+        return view('superuser/Kelas/index', [
+            'kelas' => $kelas,
+            'jurusan'=>$jurusan
+        ]);
+    } elseif($user->role == 'admin') {
+        return view('admin/Kelas/index', [
+            'kelas' => $kelas,
+            'jurusan'=>$jurusan
+        ]);
+    } else {
+        return abort(403, 'Unauthorized action.');
+    }
     }
 
     /**
@@ -32,15 +43,19 @@ class KelasController extends Controller
     'no_konsentrasi' => 'required',
     'jurusan_id' => 'required',
 ]);
-    
-
+        $jurusan = jurusan::all();
+        $user = auth()->user();
         $kelas = Kelas::create($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Kelas berhasil ditambahkan',
-            'data' => $kelas,
-        ], 201);
+        if ($user->role == 'superuser') {
+        return redirect()->route('superuser.kelas', ['jurusan' => $jurusan, 'kelas'=> $kelas])
+                ->with('success', 'Kelas berhasil ditambahkan');
+        } elseif ($user->role == 'admin') {
+        return redirect()->route('admin.kelas', ['jurusan' => $jurusan, 'kelas'=> $kelas])
+                ->with('success', 'Kelas berhasil ditambahkan');
+       } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     /**
@@ -53,7 +68,7 @@ class KelasController extends Controller
         if (!$kelas) {
             return response()->json([
                 'success' => false,
-                'message' => 'kelas tidak ditemukan',
+                'message' => 'kelas Tidak Ditemukan',
             ], 404);
         }
 
@@ -70,27 +85,44 @@ class KelasController extends Controller
     public function update(Request $request, $kelas_id)
     {
         $kelas = Kelas::find($kelas_id);
+        $user = auth()->user();
 
-        if (!$kelas) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Kelas tidak ditemukan',
-            ], 404);
+          if (!$kelas) {
+            if ($user->role == 'superuser') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Jurusan Tidak Ditemukan untuk superuser',
+                ], 404);
+            } elseif ($user->role == 'admin') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Admin Tidak Dapat mengakses jurusan ini',
+                ], 403);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak',
+                ], 403);
+            }
         }
 
         $validated = $request->validate([
             'tingkatan' => 'required',
-    'konsentrasi' => 'required',
-    'no_konsentrasi' => 'required',
-        ]);
+            'konsentrasi' => 'required',
+            'no_konsentrasi' => 'required',
+                ]);
 
         $kelas->update($validated);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Kelas berhasil diperbarui',
-            'data' => $kelas,
-        ], 200);
+        if ($user->role == 'superuser') {
+        return redirect()->route('superuser.kelas', ['kelas' => $kelas])
+                ->with('success', 'Kelas berhasil dihapus');
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('admin.kelas', ['kelas' => $kelas])
+                ->with('success', 'Kelas berhasil dihapus');
+       } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     /**
@@ -100,18 +132,37 @@ class KelasController extends Controller
     {
         $kelas = kelas::find($kelas_id);
 
-        if (!$kelas) {
-            return response()->json([
-                'success' => false,
-                'message' => 'kelas tidak ditemukan',
-            ], 404);
+        $user = auth()->user();
+
+          if (!$kelas) {
+            if ($user->role == 'superuser') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kelas Tidak Ditemukan',
+                ], 404);
+            } elseif ($user->role == 'admin') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kelas Tidak Ditemukan',
+                ], 403);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak',
+                ], 403);
+            }
         }
 
         $kelas->delete();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'kelas berhasil dihapus',
-        ], 200);
+        if ($user->role == 'superuser') {
+        return redirect()->route('superuser.kelas', ['kelas' => $kelas])
+                ->with('success', 'Kelas berhasil dihapus');
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('admin.kelas', ['kelas' => $kelas])
+                ->with('success', 'Kelas berhasil dihapus');
+       } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 }

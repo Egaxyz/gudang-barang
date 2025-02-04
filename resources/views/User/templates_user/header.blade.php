@@ -192,22 +192,12 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
                         <!-- Group Barang -->
+
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="barang" class="nav-link">
                                 <i class="nav-icon fas fa-cogs"></i>
-                                <p>
-                                    Menu Barang
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
+                                <p>Barang</p>
                             </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="barang" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Barang</p>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
 
                         <!-- Group Peminjaman -->
@@ -227,7 +217,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="peminjaman" class="nav-link">
+                                    <a href="pengembalian" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Pengembalian</p>
                                     </a>
@@ -240,7 +230,6 @@
                                 </li>
                             </ul>
                         </li>
-                        <!-- Group Peminjaman -->
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-list"></i>
@@ -251,7 +240,7 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="jenis-barang" class="nav-link">
+                                    <a href="siswa" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Daftar Siswa</p>
                                     </a>

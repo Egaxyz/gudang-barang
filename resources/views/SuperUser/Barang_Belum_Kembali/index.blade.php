@@ -35,7 +35,6 @@
                                 <td>Edit | Delete</td>
                             </tr>
                         @endforeach
-
                     </tbody>
                 </table>
             </div>

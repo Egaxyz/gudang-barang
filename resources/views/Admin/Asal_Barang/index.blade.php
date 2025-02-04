@@ -112,7 +112,7 @@
         </div>
     </div>
 
-    @include('SuperUser/Asal_Barang.modals')
+    @include('Admin/Asal_Barang.modals')
 @endsection
 
 @push('script')
@@ -133,7 +133,7 @@
                 modal.find('#jumlah_kirim').val(jumlah_kirim);
                 modal.find('#tgl_kirim').val(tgl_kirim);
 
-                modal.find('.modal-body form').attr('action', '{{ url('asal-barang') }}/' +
+                modal.find('.modal-body form').attr('action', '{{ url('/admin/asal-barang') }}/' +
                     id_asal_br);
                 modal.find('#method').html('@method('PATCH')');
             } else {
@@ -143,38 +143,13 @@
                 modal.find('#tgl_kirim').val('');
                 modal.find('#method').html('');
                 modal.find('.modal-body form').attr('action',
-                    '{{ url('asal-barang') }}');
+                    '{{ url('/admin/asal-barang') }}');
             }
         });
 
         $(document).on('click', '[data-toggle="modal"][data-target="#deleteModal"]', function() {
             var barangId = $(this).data('id');
-            $('#deleteForm').attr('action', '/asal-barang/' + barangId);
-        });
-    </script>
-
-    <script src="{{ asset('assets') }}/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="{{ asset('assets') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
-    <script src="{{ asset('assets') }}/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
-    <script src="{{ asset('assets') }}/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
-    <script src="{{ asset('assets') }}/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
-    <script src="{{ asset('assets') }}/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
-    <script src="{{ asset('assets') }}/plugins/jszip/jszip.min.js"></script>
-    <script src="{{ asset('assets') }}/plugins/pdfmake/pdfmake.min.js"></script>
-    <script src="{{ asset('assets') }}/plugins/pdfmake/vfs_fonts.js"></script>
-    <script src="{{ asset('assets') }}/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
-    <script src="{{ asset('assets') }}/plugins/datatables-buttons/js/buttons.print.min.js"></script>
-    <script src="{{ asset('assets') }}/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
-    <script src="{{ asset('assets') }}/plugins/sweetalert2/sweetalert2.min.js"></script>
-
-    <script>
-        $(function() {
-            $("#example1").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#deleteForm').attr('action', '/admin/asal-barang/' + barangId);
         });
     </script>
 @endpush

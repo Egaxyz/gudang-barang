@@ -13,9 +13,17 @@ class UserController extends Controller
      */
     public function index()
     {
-        $data['pengguna'] = Pengguna::get();
-
-        return view('SuperUser/Pengguna.index')->with($data);
+        $pengguna = Pengguna::all();
+        $user = auth()->user();
+        if ($user->role == 'superuser'){
+        return view('superuser/Pengguna/index', [
+            'pengguna' => $pengguna,
+        ]);
+    } else {
+        return view('admin/Pengguna/index', [
+            'pengguna' => $pengguna,
+        ]);
+    }
     }
 
     public function store(StorePenggunaRequest $request)
@@ -32,7 +40,16 @@ class UserController extends Controller
 
         $pengguna = Pengguna::create($validated);
 
-            return redirect('pengguna')->with('success', 'Data Berhasil Ditambahkan');
+        $user = auth()->user();
+           if ($user->role == 'superuser') {
+        return redirect()->route('superuser.pengguna')
+                ->with('success', 'Pengguna Berhasil Ditambahkan');
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('admin.pengguna')
+                ->with('success', 'Pengguna Berhasil Ditambahkan');
+       } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     /**
@@ -64,20 +81,40 @@ class UserController extends Controller
         // Cari data berdasarkan jns_$pengguna_id
         $pengguna = Pengguna::find($pengguna_id);
 
+        $user = auth()->user();
         if (!$pengguna) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data tpengguna_idak ditemukan'
-            ], 404);
+            if ($user->role == 'superuser') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pengguna Tidak Ditemukan',
+                ], 404);
+            } elseif ($user->role == 'admin') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pengguna Tidak Ditemukan',
+                ], 403);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak',
+                ], 403);
+            }
         }
-
         // Update data
         $pengguna->user_nama = $request->user_nama;
         $pengguna->role = $request->role;
         $pengguna->user_sts = $request->user_sts;
         $pengguna->save();
 
-            return redirect('pengguna')->with('success', 'Data Berhasil Diperbarui');
+           if ($user->role == 'superuser') {
+        return redirect()->route('superuser.pengguna')
+                ->with('success', 'Pengguna Berhasil Diperbarui');
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('admin.pengguna')
+                ->with('success', 'Pengguna Berhasil Diperbarui');
+       } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     /**
@@ -87,17 +124,38 @@ public function destroy($pengguna_id)
     {
         // Cari data berdasarkan pengguna_id
         $pengguna = Pengguna::find($pengguna_id);
-
+        
+        $user = auth()->user();
         if (!$pengguna) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data tidak ditemukan'
-            ], 404);
+            if ($user->role == 'superuser') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pengguna Tidak Ditemukan',
+                ], 404);
+            } elseif ($user->role == 'admin') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Pengguna Tidak Ditemukan',
+                ], 403);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Akses ditolak',
+                ], 403);
+            }
         }
 
         // Hapus data
         $pengguna->delete();
 
-            return redirect('pengguna')->with('success', 'Data Berhasil Dihapus');
+           if ($user->role == 'superuser') {
+        return redirect()->route('superuser.pengguna')
+                ->with('success', 'Pengguna Berhasil Dihapus');
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('admin.pengguna')
+                ->with('success', 'Pengguna Berhasil Dihapus');
+       } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 }

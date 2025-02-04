@@ -1,4 +1,4 @@
-@extends('User.templates_user.header')
+@extends('SuperUser.templates_superuser.header')
 @push('style')
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
     <link rel="stylesheet" href="{{ asset('assets') }}/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
@@ -12,7 +12,7 @@
             <div class="container-fluid">
                 <div class="row mb-2">
                     <div class="col-sm-6">
-                        <h1>Jenis Barang</h1>
+                        <h1>Jurusan</h1>
                     </div>
                 </div>
             </div>
@@ -20,9 +20,8 @@
 
         <div class="card">
             <div class="card-header">
-                <button class="btn bg-primary" type="button" data-toggle="modal" data-target="#formModal">
-                    <i class="fas fa-plus-square"></i> Tambah Jenis Barang
-                </button>
+                <button class="btn bg-primary" type="button" data-toggle="modal" data-target="#formModal"><i
+                        class="fas fa-plus-square"></i> Tambah Data Jurusan</button>
 
                 <div class="card-tools">
                     <button type="button" class="btn btn-tool" data-card-widget="collapse" title="collapse">
@@ -57,25 +56,19 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th>Kode Jenis Barang</th>
-                            <th>Nama Jenis Barang</th>
-                            <th>Tanggal Entry</th>
-                            <th>Menu</th>
+                            <th>Jurusan</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($jenis_barang as $barang)
+                        @foreach ($jurusan as $jurusan)
                             <tr>
-                                <td>{{ $barang->jns_brg_kode }}</td>
-                                <td>{{ $barang->jns_barang_nama }}</td>
-                                <td>{{ $barang->tgl_entry }}</td>
+                                <td>{{ $jurusan->jurusan }}</td>
                                 <td>
-                                    <button class="btn btn-success" type="button" data-mode="edit" data-toggle="modal"
-                                        data-target="#formModal" data-id="{{ $barang->jns_brg_kode }}"
-                                        data-nama="{{ $barang->jns_barang_nama }}"
-                                        data-tanggal="{{ $barang->tgl_entry }}">Edit</button>
+                                    <button class="btn btn-success" type="button" data-toggle="modal"
+                                        data-target="#formModal" data-mode="edit" data-id="{{ $jurusan->jurusan_id }}"
+                                        data-jurusan="{{ $jurusan->jurusan }}">Edit</button>
                                     <button class="btn btn-danger" type="button" data-toggle="modal"
-                                        data-target="#deleteModal" data-id="{{ $barang->jns_brg_kode }}">Delete</button>
+                                        data-target="#deleteModal" data-id="{{ $jurusan->jurusan_id }}">Delete</button>
                                 </td>
                             </tr>
                         @endforeach
@@ -109,8 +102,7 @@
             </div>
         </div>
     </div>
-
-    @include('User/Jenis_Barang/modals')
+    @include('SuperUser/Jurusan/modals')
 @endsection
 
 @push('script')
@@ -119,32 +111,29 @@
             const btn = $(e.relatedTarget);
             console.log(btn.data());
             const mode = btn.data('mode');
-            const jns_brg_kode = btn.data('id');
-            const jns_barang_nama = btn.data('nama');
-            const tgl_entry = btn.data('tanggal');
+            const jurusan_id = btn.data('id');
+            const jurusan = btn.data('jurusan');
             const modal = $(this);
 
             if (mode == 'edit') {
-                modal.find('.modal-title').text('Edit Data Jenis Barang');
-                modal.find('#jns_barang_nama').val(jns_barang_nama);
-                modal.find('#tgl_entry').val(tgl_entry);
-
-                modal.find('.modal-body form').attr('action', '{{ url('/user/jenis-barang') }}/' +
-                    jns_brg_kode);
+                modal.find('.modal-title').text('Edit Data Jurusan');
+                modal.find('#jurusan').val(jurusan)
+                modal.find('.modal-body form').attr('action', '{{ url('/superuser/jurusan') }}/' +
+                    jurusan_id);
                 modal.find('#method').html('@method('PATCH')');
             } else {
-                modal.find('.modal-title').text('Input Data Jenis Barang');
-                modal.find('#jns_barang_nama').val('');
-                modal.find('#tgl_entry').val('');
+                modal.find('.modal-title').text('Input Data Jurusan');
+                modal.find('#jurusan').val('');
                 modal.find('#method').html('');
                 modal.find('.modal-body form').attr('action',
-                    '{{ url('/user/jenis-barang') }}');
+                    '{{ url('/superuser/jurusan') }}');
+
             }
         });
 
         $(document).on('click', '[data-toggle="modal"][data-target="#deleteModal"]', function() {
-            var barangKode = $(this).data('id');
-            $('#deleteForm').attr('action', '/user/jenis-barang/' + barangKode);
+            var jurusan_id = $(this).data('id');
+            $('#deleteForm').attr('action', '/superuser/jurusan/' + jurusan_id);
         });
     </script>
 @endpush
