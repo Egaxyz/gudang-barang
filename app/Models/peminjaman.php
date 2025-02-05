@@ -18,13 +18,26 @@ class peminjaman extends Model
 
     protected $fillable = [
         'pb_tgl',
-        'pb_nis_siswa',
-        'pb_nama_siswa',
         'pb_harus_kembali_tgl',
         'pb_stat'
     ];
+
+    public function detail()
+{
+    return $this->belongsTo(peminjaman_barang::class, 'pb_id', 'pb_id');
+}
     public function siswa()
 {
     return $this->belongsTo(siswa::class, 'siswa_id');
 }
+  public function barang()
+    {
+        return $this->belongsTo(barang_inventaris::class, 'br_kode', 'br_kode');
+    }
+    public function pengguna()
+    {
+            {
+        return $this->belongsTo(Pengguna::class, 'user_id', 'user_id');
+    }
+    }
 }

@@ -15,11 +15,11 @@ return new class extends Migration
             $table->string('pb_id', 20)->primary();
             $table->integer('siswa_id');
             $table->date('pb_tgl');
-            $table->string('pb_nis_siswa', 20);
-            $table->string('pb_nama_siswa', 100);
             $table->date('pb_harus_kembali_tgl');
+            $table->integer('user_id');
             $table->enum('pb_stat', ['0','1']);
 
+            $table->foreign('user_id')->references('user_id')->on('pengguna');
             $table->foreign('siswa_id')->references('siswa_id')->on('siswa');
         });
     }

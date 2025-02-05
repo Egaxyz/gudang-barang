@@ -124,7 +124,7 @@ Route::middleware(['role:user'])->group(function () {
         Route::delete('/user/barang/{id}', [Barang::class, 'destroy']);
 
         Route::get('/user/peminjaman-barang', [PeminjamanBarangController::class, 'index'])->name('user.peminjaman-barang'); 
-        Route::post('/user/peminjaman-barang', [PeminjamanBarangController::class, 'store']);
+        Route::post('/user/peminjaman-barang', [PeminjamanBarangController::class, 'storeWithBarang']);
         Route::patch('/user/peminjaman-barang/{id}', [PeminjamanBarangController::class, 'update']);
         Route::delete('/user/peminjaman-barang/{id}', [PeminjamanBarangController::class, 'destroy']);
 
@@ -152,12 +152,12 @@ Route::middleware(['role:superuser'])->group(function () {
         Route::delete('/superuser/pengguna/{id}', [UserController::class, 'destroy']);
 
         Route::get('/superuser/peminjaman-barang', [PeminjamanBarangController::class, 'index'])->name('superuser.peminjaman-barang'); // Melihat semua data peminjaman
-        Route::post('/superuser/peminjaman-barang', [PeminjamanBarangController::class, 'store']); // Menyimpan data peminjaman
+        Route::post('/superuser/peminjaman-barang', [PeminjamanBarangController::class, 'store']);
         Route::patch('/superuser/peminjaman-barang/{id}', [PeminjamanBarangController::class, 'update']);
         Route::delete('/superuser/peminjaman-barang/{id}', [PeminjamanBarangController::class, 'destroy']);
 
         Route::get('/superuser/peminjaman', [PeminjamanCotroller::class, 'index'])->name('superuser.peminjaman'); // Melihat semua data peminjaman
-        Route::post('/superuser/peminjaman', [PeminjamanCotroller::class, 'store']); // Menyimpan data peminjaman
+        Route::post('/superuser/peminjaman', [PeminjamanCotroller::class, 'storeWithBarang']); // Menyimpan data peminjaman
         Route::patch('/superuser/peminjaman/{id}', [PeminjamanCotroller::class, 'update']);
         Route::delete('/superuser/peminjaman/{id}', [PeminjamanCotroller::class, 'destroy']);
 
