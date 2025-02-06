@@ -24,22 +24,27 @@
                                     data-target="#siswaModal">Cari</button>
                             </div>
                         </div>
-                        <div id="selectedSiswaList" class="mt-2"></div> <!-- Display selected siswa here -->
+                        <div id="selectedSiswaList" class="mt-2"></div>
                     </div>
 
                     <!-- Pilih Barang -->
                     <div class="form-group">
-                        <label for="barang">Barang</label>
+                        <label for="barang">Pilih Barang</label>
                         <div class="input-group">
-                            <input type="text" id="barang_display" class="form-control"
-                                placeholder="Klik untuk memilih barang" readonly>
-                            <input type="hidden" id="barang_input" name="barang">
-                            <div class="input-group-append">
-                                <button type="button" class="btn btn-primary" data-toggle="modal"
-                                    data-target="#barangModal">Cari</button>
+                            <div class="input-group">
+                                <input type="text" id="barang_display" class="form-control"
+                                    placeholder="Klik untuk memilih barang" readonly>
+                                <input type="hidden" id="barang_ids" name="barang_ids[]">
+                                <!-- Menggunakan array untuk menyimpan br_kode -->
+                                <div class="input-group-append">
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                        data-target="#barangModal">Cari</button>
+                                </div>
                             </div>
+                            <div id="selectedBarangList" class="mt-2"></div> <!-- B
+                            <!-- This will display selected barang -->
+                            <div id="barangIdsContainer"></div> <!-- This will hold hidden input fields -->
                         </div>
-                        <div id="selectedBarangList" class="mt-2"></div> <!-- Display selected barang here -->
                     </div>
 
                     <!-- Tanggal Harus Kembali -->
@@ -98,6 +103,7 @@
         </div>
     </div>
 </div>
+
 <!-- Modal Pencarian Barang -->
 <div class="modal fade" id="barangModal" tabindex="-1" role="dialog" aria-labelledby="barangModalLabel"
     aria-hidden="true">
@@ -112,19 +118,14 @@
             <div class="modal-body">
                 <input type="text" id="searchBarang" class="form-control mb-3" placeholder="Cari Barang..."
                     onkeyup="filterBarang()">
-                <div id="barangList" class="list-group">
+                <div id="barangList">
                     @foreach ($barang as $item)
-                        <div
-                            class="list-group-item d-flex align-items-center justify-content-between
-                            {{ $item->pdb_sts == 1 ? 'disabled-item' : '' }}">
-                            <input type="checkbox" id="checkbox_{{ $item->br_kode }}" class="mr-2"
-                                {{ $item->pdb_sts == 1 ? 'disabled' : '' }}
-                                onclick="{{ $item->pdb_sts == 1 ? 'return false;' : '' }}"
-                                onchange="toggleBarangSelection('{{ $item->br_kode }}', '{{ $item->br_nama }}', this)">
-                            <span class="font-weight-bold">{{ $item->br_kode }} - {{ $item->br_nama }}</span>
-                            <span class="badge {{ $item->pdb_sts == 1 ? 'badge-danger' : 'badge-success' }}">
-                                {{ $item->pdb_sts == 1 ? 'Dipinjam' : 'Tersedia' }}
-                            </span>
+                        <div class="list-group">
+                            <label class="list-group-item">
+                                <input type="checkbox" class="barang-checkbox" value="{{ $item->br_kode }}"
+                                    onchange="updateSelectedBarang(this, '{{ $item->br_nama }}')">
+                                <strong>{{ $item->br_kode }}</strong> - {{ $item->br_nama }}
+                            </label>
                         </div>
                     @endforeach
                 </div>
@@ -136,93 +137,91 @@
 <style>
     .disabled-item {
         cursor: not-allowed;
-        /* Change cursor to indicate disabled */
         opacity: 0.6;
-        /* Make it look disabled */
+    }
+
+    .selected-item {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .selected-barang {
+        background-color: #28a745;
+        /* Warna hijau untuk barang yang dipilih */
+        color: white;
+        padding: 5px;
+        border-radius: 5px;
+        margin-right: 5px;
     }
 </style>
 
 <script>
-    function filterBarang() {
-        let input = document.getElementById("searchBarang").value.toLowerCase(); // Get the search input
-        let items = document.querySelectorAll("#barangList .list-group-item"); // Get all barang items
-        items.forEach(item => {
-            // Get the text content of the item
-            let text = item.textContent.toLowerCase();
-            // Show or hide the item based on the search input
-            item.style.display = text.includes(input) ? "" : "none";
-        });
-    }
-
-    function toggleBarangSelection(br_kode, br_nama, checkbox) {
-        let barangInput = document.getElementById("barang_input");
-        let barangDisplay = document.getElementById("barang_display");
-        let selectedBarangList = document.getElementById("selectedBarangList");
-
-        if (checkbox.checked) {
-            // Add the selected barang to the hidden input and display
-            if (!barangInput.value.includes(br_kode)) {
-                // Update the hidden input
-                barangInput.value += (barangInput.value ? ',' : '') + br_kode;
-                // Update the display
-                barangDisplay.value += (barangDisplay.value ? ', ' : '') + br_nama;
-                // Add to selected list
-                selectedBarangList.innerHTML += `<span class="badge badge-info mr-1">${br_nama}</span>`;
-            }
-        } else {
-            // Remove the unselected barang from the hidden input and display
-            barangInput.value = barangInput.value.split(',').filter(item => item !== br_kode).join(',');
-            barangDisplay.value = barangDisplay.value.split(', ').filter(item => item !== br_nama).join(', ');
-            selectedBarangList.innerHTML = selectedBarangList.innerHTML.split('<span class="badge badge-info mr-1">')
-                .filter(item => item !== `${br_nama}</span>`).join('');
-        }
-    }
-
-    function selectBarang(br_kode, br_nama) {
-        // Add the selected barang to the hidden input and display
-        let barangInput = document.getElementById("barang_input");
-        let barangDisplay = document.getElementById("barang_display");
-        let selectedBarangList = document.getElementById("selectedBarangList");
-
-        // Check if the barang is already selected
-        if (!barangInput.value.includes(br_kode)) {
-            // Update the hidden input
-            barangInput.value += (barangInput.value ? ',' : '') + br_kode;
-            // Update the display
-            barangDisplay.value += (barangDisplay.value ? ', ' : '') + br_nama;
-            // Add to selected list
-            selectedBarangList.innerHTML += `<span class="badge badge-info mr-1">${br_nama}</span>`;
-        }
-
-        // Optionally, you can close the modal after selection
-        $("#barangModal").modal("hide");
-    }
-
     function filterSiswa() {
-        let input = document.getElementById("searchSiswa").value.toLowerCase(); // Get the search input
-        let items = document.querySelectorAll("#siswaList .list-group-item"); // Get all siswa items
+        let input = document.getElementById("searchSiswa").value.toLowerCase();
+        let items = document.querySelectorAll("#siswaList .list-group-item");
         items.forEach(item => {
-            // Get the text content of the item
             let text = item.textContent.toLowerCase();
-            // Show or hide the item based on the search input
             item.style.display = text.includes(input) ? "" : "none";
         });
     }
-
 
     function selectSiswa(siswa_id, nis, nama, tingkatan, jurusan, konsentrasi, no_konsentrasi) {
-        // Add the selected siswa to the hidden input and display
         let siswaInput = document.getElementById("siswa_id");
         let siswaDisplay = document.getElementById("nis_display");
         let selectedSiswaList = document.getElementById("selectedSiswaList");
 
-        // Update the hidden input
         siswaInput.value = siswa_id;
-        // Update the display
-        siswaDisplay.value = `${nis} - ${nama}`;
-        // Add to selected list
-
-        // Optionally, you can close the modal after selection
+        siswaDisplay.value = `${nis} - ${nama} ${tingkatan} ${jurusan} ${konsentrasi} ${no_konsentrasi}`;
         $("#siswaModal").modal("hide");
+    }
+
+    function filterBarang() {
+        let input = document.getElementById("searchBarang").value.toLowerCase();
+        let items = document.querySelectorAll("#barangList .list-group-item");
+        items.forEach(item => {
+            let text = item.textContent.toLowerCase();
+            item.style.display = text.includes(input) ? "" : "none";
+        });
+    }
+
+    function updateSelectedBarang(checkbox, br_nama) {
+        let selectedBarangList = document.getElementById("selectedBarangList");
+        let selectedBarang = [];
+
+        // Get existing selected barang from hidden input fields
+        let currentSelectedBarang = Array.from(selectedBarangList.getElementsByClassName("selected-barang"));
+        currentSelectedBarang.forEach(item => {
+            selectedBarang.push({
+                br_kode: item.getAttribute("data-br_kode"),
+                br_nama: item.innerText.trim()
+            });
+        });
+
+        if (checkbox.checked) {
+            // Add selected item to the list
+            selectedBarang.push({
+                br_kode: checkbox.value,
+                br_nama: br_nama
+            });
+            selectedBarangList.innerHTML +=
+                `<span class="badge badge-info mr-1 selected-barang" data-br_kode="${checkbox.value}">${br_nama}</span>`;
+        } else {
+            // Remove item from the list
+            selectedBarang = selectedBarang.filter(item => item.br_kode !== checkbox.value);
+            selectedBarangList.innerHTML = selectedBarang.map(item => {
+                return `<span class="badge badge-info mr-1 selected-barang" data-br_kode="${item.br_kode}">${item.br_nama}</span>`;
+            }).join('');
+        }
+
+        // Update hidden inputs for each selected barang
+        let barangInputsHtml = selectedBarang.map((item, index) => {
+            return `<input type="hidden" name="barang[${index}][br_kode]" value="${item.br_kode}">`;
+        }).join('');
+
+        document.getElementById('barangIdsContainer').innerHTML = barangInputsHtml;
+
+        // Update the display input for barang
+        let barangDisplay = document.getElementById("barang_display");
+        barangDisplay.value = selectedBarang.map(item => item.br_nama).join(', ');
     }
 </script>

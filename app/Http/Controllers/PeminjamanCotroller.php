@@ -65,24 +65,13 @@ class PeminjamanCotroller extends Controller
     {
         // Validate the incoming request
         $request->validate([
-            'pb_stat' => 'required',
+            'pb_stat' => 'required',    
             'pb_harus_kembali_tgl' => 'required|date',
             'siswa_id' => 'required|exists:siswa,siswa_id', // Ensure siswa_id exists in the siswa table
             'barang' => 'required|array', // Ensure barang is an array
             'barang.*.br_kode' => 'required|string', // Each barang must have a br_kode
-            'barang.*.pdb_sts' => 'required|string', // Each barang must have a pdb_sts
         ]);
-        $barangDipinjam = peminjaman_barang::where('br_kode', $request->br_kode)
-        ->where('pdb_sts', 'dipinjam') 
-        ->first();
-       
-    if ($barangDipinjam) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Barang sedang dipinjam dan tidak dapat dipinjam bersamaan',
-        ], 400);
-    }
-
+        
         DB::beginTransaction(); // Start transaction
         
         try {
@@ -93,11 +82,9 @@ class PeminjamanCotroller extends Controller
                 ->whereRaw("SUBSTRING(pb_id, 7, 2) = ?", [$bln_sekarang])
                 ->orderBy('pb_id', 'desc')
                 ->first();
-
             $lastNoUrutPb = $lastPeminjaman ? intval(substr($lastPeminjaman->pb_id, -3)) : 0;
             $newNoUrutPb = str_pad($lastNoUrutPb + 1, 3, '0', STR_PAD_LEFT);
             $pb_id_baru = "PB" . $thn_sekarang . $bln_sekarang . $newNoUrutPb;
-
             // Save peminjaman data
             $peminjaman = new Peminjaman();
             $peminjaman->pb_id = $pb_id_baru;
@@ -107,31 +94,25 @@ class PeminjamanCotroller extends Controller
             $peminjaman->pb_tgl = now();
             $peminjaman->pb_stat = $request->pb_stat;
             $peminjaman->save();
-
             // Save borrowed items
             foreach ($request->barang as $barang) {
                 // Create a new peminjaman_barang record
                 $peminjamanBarang = new Peminjaman_barang();
                 
                 // Generate pbd_id for peminjaman_barang
-                $lastDetail = Peminjaman_barang::whereRaw("SUBSTRING(pbd_id, 3, 4) = ?", [$thn_sekarang])
-                    ->whereRaw("SUBSTRING(pbd_id, 7, 2) = ?", [$bln_sekarang])
+                $lastDetail = Peminjaman_barang::where('pb_id', $pb_id_baru)
                     ->orderBy('pbd_id', 'desc')
                     ->first();
-
                 $lastNoUrut = $lastDetail ? intval(substr($lastDetail->pbd_id, -3)) : 0;
                 $newNoUrut = str_pad($lastNoUrut + 1, 3, '0', STR_PAD_LEFT);
-
                 $peminjamanBarang->pbd_id = "PJ" . $thn_sekarang . $bln_sekarang . substr($pb_id_baru, -3) . $newNoUrut;
                 $peminjamanBarang->pb_id = $pb_id_baru; // Link to the peminjaman record
                 $peminjamanBarang->br_kode = $barang['br_kode'];
                 $peminjamanBarang->pdb_tgl = now();
-                $peminjamanBarang->pdb_sts = 'tersedia';
-                $peminjamanBarang->save();
+                $peminjamanBarang->pdb_sts = 'dipinjam';
+                $peminjamanBarang->save(); // Save the borrowed item
             }
-
             DB::commit(); // Commit transaction
-
             return response()->json([
                 'success' => true,
                 'message' => 'Peminjaman dan barang berhasil disimpan',
@@ -150,6 +131,7 @@ class PeminjamanCotroller extends Controller
             ], 500);
         }
     }
+
     /**
      * Mengambil data barang inventaris dengan filter berdasarkan tahun.
      */
