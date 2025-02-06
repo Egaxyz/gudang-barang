@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\asal_barang;
 use App\Models\barang_inventaris;
+use App\Models\jenis_barang;
 use App\Models\peminjaman_barang;
 use App\Models\Pengguna;
 use App\Models\siswa;
@@ -70,7 +72,17 @@ class PeminjamanCotroller extends Controller
             'barang.*.br_kode' => 'required|string', // Each barang must have a br_kode
             'barang.*.pdb_sts' => 'required|string', // Each barang must have a pdb_sts
         ]);
-        
+        $barangDipinjam = peminjaman_barang::where('br_kode', $request->br_kode)
+        ->where('pdb_sts', 'dipinjam') 
+        ->first();
+       
+    if ($barangDipinjam) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Barang sedang dipinjam dan tidak dapat dipinjam bersamaan',
+        ], 400);
+    }
+
         DB::beginTransaction(); // Start transaction
         
         try {
@@ -102,7 +114,8 @@ class PeminjamanCotroller extends Controller
                 $peminjamanBarang = new Peminjaman_barang();
                 
                 // Generate pbd_id for peminjaman_barang
-                $lastDetail = Peminjaman_barang::where('pb_id', $pb_id_baru)
+                $lastDetail = Peminjaman_barang::whereRaw("SUBSTRING(pbd_id, 3, 4) = ?", [$thn_sekarang])
+                    ->whereRaw("SUBSTRING(pbd_id, 7, 2) = ?", [$bln_sekarang])
                     ->orderBy('pbd_id', 'desc')
                     ->first();
 
@@ -113,8 +126,8 @@ class PeminjamanCotroller extends Controller
                 $peminjamanBarang->pb_id = $pb_id_baru; // Link to the peminjaman record
                 $peminjamanBarang->br_kode = $barang['br_kode'];
                 $peminjamanBarang->pdb_tgl = now();
-                $peminjamanBarang->pdb_sts = $barang['pdb_sts'];
-                $peminjamanBarang->save(); // Save the borrowed item
+                $peminjamanBarang->pdb_sts = 'tersedia';
+                $peminjamanBarang->save();
             }
 
             DB::commit(); // Commit transaction
@@ -137,8 +150,6 @@ class PeminjamanCotroller extends Controller
             ], 500);
         }
     }
-
-
     /**
      * Mengambil data barang inventaris dengan filter berdasarkan tahun.
      */
@@ -146,9 +157,11 @@ class PeminjamanCotroller extends Controller
     {
 
 {
-    $peminjaman = peminjaman::with('barang', 'siswa', 'pengguna', 'detail')->get();
+    $peminjaman = peminjaman::with('barang', 'siswa', 'pengguna', 'detail', 'asal_barang', 'jenis_barang')->get();
+    $asal_barang = asal_barang::all();
+            $jenis_barang = jenis_barang::all();
     $user = auth()->user();
-    $siswa = siswa::all(); // Fetch all siswa
+    $siswa = siswa::with('jurusanData', 'kelasData')->get(); // Fetch all siswa
     $pengguna = Pengguna::all(); // Fetch all pengguna
     $barang = barang_inventaris::all(); // Fetch all barang
 

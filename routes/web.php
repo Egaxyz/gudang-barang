@@ -143,7 +143,7 @@ Route::middleware(['role:superuser'])->group(function () {
                 
         Route::get('/superuser/barang', [Barang::class, 'index'])->name('superuser.barang');
         Route::post('/superuser/barang', [Barang::class, 'store']);
-        Route::patch('/superuser/barang/{id}', [Barang::class, 'update']);
+        Route::patch('/superuser/barang/{id}', [Barang::class, 'update'])->name('superuser.barang.edit');
         Route::delete('/superuser/barang/{id}', [Barang::class, 'destroy']);
 
         Route::get('/superuser/pengguna', [UserController::class, 'index'])->name('superuser.pengguna');

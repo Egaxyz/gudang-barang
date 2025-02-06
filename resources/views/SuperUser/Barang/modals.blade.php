@@ -12,6 +12,11 @@
                     @csrf
                     <div id="method"></div>
                     <div class="form-group">
+                        <label for="br_nama">Nama Barang</label>
+                        <input type="text" autocomplete="off" placeholder="Masukkan Nama Barang" class="form-control"
+                            id="br_nama" name="br_nama" required>
+                    </div>
+                    <div class="form-group">
                         <label for="id_asal_br">Asal Barang</label>
                         <select id="id_asal_br" name="id_asal_br" class="form-control">
                             <option value="" disabled selected>Pilih Asal Barang</option>

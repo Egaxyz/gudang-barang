@@ -40,4 +40,16 @@ class peminjaman extends Model
         return $this->belongsTo(Pengguna::class, 'user_id', 'user_id');
     }
     }
+    public function asal_barang()
+    {
+            {
+        return $this->belongsTo(asal_barang::class, 'br_kode', 'br_kode');
+    }
+    }
+    public function jenis_barang()
+    {
+            {
+        return $this->belongsTo(jenis_barang::class, 'br_kode', 'br_kode');
+    }
+    }
 }

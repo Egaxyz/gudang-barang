@@ -55,6 +55,7 @@
                     <thead>
                         <tr>
                             <th>Kode Barang</th>
+                            <th>Nama Barang</th>
                             <th>Jenis Barang</th>
                             <th>Asal Barang</th>
                             <th>Tanggal Terima</th>
@@ -67,6 +68,7 @@
                         @foreach ($barang_inventaris as $barang)
                             <tr>
                                 <td>{{ $barang->br_kode }}</td>
+                                <td>{{ $barang->br_nama }}</td>
                                 <td>{{ $barang->jenisBarang->jns_barang_nama ?? 'Unknown' }}</td>
                                 <td>{{ $barang->asalBarang->nama_perusahaan ?? 'Unknown' }}</td>
                                 <td>{{ $barang->br_tgl_terima }}</td>
@@ -88,7 +90,7 @@
                                 <td>
                                     <button class="btn btn-success" type="button" data-toggle="modal"
                                         data-target="#formModal" data-mode="edit" data-id="{{ $barang->br_kode }}"
-                                        data-terima="{{ $barang->br_tgl_terima }}"
+                                        data-terima="{{ $barang->br_tgl_terima }}" data-nama="{{ $barang->br_nama }}"
                                         data-jenis="{{ $barang->jenisBarang->jns_brg_kode }}"
                                         data-asal="{{ $barang->asalBarang->id_asal_br }}"
                                         data-entry="{{ $barang->br_tgl_entry }}"
@@ -137,6 +139,7 @@
             const btn = $(e.relatedTarget);
             const mode = btn.data('mode');
             const br_kode = btn.data('id');
+            const br_nama = btn.data('nama')
             const jns_barang_nama = btn.data('jenis');
             const nama_perusahaan = btn.data('asal');
             const br_tgl_terima = btn.data('terima');
@@ -147,6 +150,7 @@
             if (mode == 'edit') {
                 modal.find('.modal-title').text('Edit Data Barang');
                 modal.find('#br_kode').val(br_kode);
+                modal.find('#br_nama').val(br_nama);
                 modal.find('#br_tgl_terima').val(br_tgl_terima);
                 modal.find('#jns_brg_kode').val(jns_barang_nama);
                 modal.find('#id_asal_br').val(nama_perusahaan);
@@ -156,6 +160,7 @@
                 modal.find('#method').html('@method('PATCH')');
             } else {
                 modal.find('.modal-title').text('Input Data Barang');
+                modal.find('#br_nama').val('')
                 modal.find('#br_tgl_terima').val('');
                 modal.find('#jns_brg_kode').val('');
                 modal.find('#id_asal_br').val('');

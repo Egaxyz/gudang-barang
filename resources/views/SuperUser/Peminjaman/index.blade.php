@@ -30,7 +30,6 @@
                 <div class="card-header">
                     <button class="btn bg-warning" type="button" data-toggle="modal" data-target="#formModal"><i
                             class="fas fa-reply"></i> Pinjam Barang</button>
-
                     <div class="card-tools">
                         <button type="button" class="btn btn-tool" data-card-widget="collapse" title="collapse">
                             <i class="fa fa-minus"></i>
@@ -41,7 +40,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
+                    <table id="example1"class="table table-bordered table-striped">
                         <thead>
                             <tr>
                                 <th>Kode Peminjaman</th>
@@ -54,14 +53,14 @@
                                 <th>Menu</th>
                             </tr>
                         </thead>
-                        <<tbody>
+                        <tbody>
                             @foreach ($peminjaman as $pinjam)
                                 <tr>
-                                    <td>{{ optional($pinjam->barang)->br_kode ?? 'unknown' }}</td>
-                                    <td>{{ $pinjam->siswa->siswa_id ?? 'unknown' }}</td>
-                                    <td>{{ $pinjam->siswa->siswa_id ?? 'unknown' }}</td>
+                                    <td>{{ $pinjam->detail->pbd_id ?? 'unknown' }}</td>
+                                    <td>{{ $pinjam->detail->br_kode ?? 'unknown' }}</td>
+                                    <td>{{ $pinjam->siswa->nama_siswa ?? 'unknown' }}</td>
+                                    <td>{{ $pinjam->siswa->nis ?? 'unknown' }}</td>
                                     <td>{{ $pinjam->pengguna->user_nama ?? 'unknown' }}</td>
-                                    <td>{{ $pinjam->pb_tgl }}</td>
                                     <td>{{ $pinjam->pb_harus_kembali_tgl }}</td>
                                     <td>{{ $pinjam->pb_stat }}</td>
                                     <td>
@@ -81,7 +80,7 @@
                                     </td>
                                 </tr>
                             @endforeach
-                            </tbody>
+                        </tbody>
                     </table>
                 </div>
             </div>

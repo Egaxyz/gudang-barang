@@ -35,6 +35,7 @@ class Barang extends Controller
         // Simpan data baru
         $barang = new barang_inventaris();
         $barang->br_kode = $kodeBarangBaru;
+        $barang->br_nama = $request->br_nama;
         $barang->id_asal_br = $request->id_asal_br;
         $barang->jns_brg_kode = $request->jns_brg_kode;
         $barang->user_id = auth()->id();
@@ -124,6 +125,7 @@ public function laporan(Request $request)
         return view('superuser/Laporan_Barang/index', [
             'dataByYear' => $dataByYear,
             'barang_inventaris' => $barangInventaris,
+
         ]);
     } else {
         return view('admin/Laporan_Barang/index', [
@@ -200,6 +202,7 @@ public function barang_belum_kembali(Request $request)
         }
     // Update data
     $barang->id_asal_br = $request->id_asal_br;
+    $barang->br_nama = $request->br_nama;
     $barang->jns_brg_kode = $request->jns_brg_kode;
     $barang->br_tgl_terima = $request->br_tgl_terima;
     $barang->br_tgl_entry = $request->br_tgl_entry;
