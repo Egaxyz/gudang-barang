@@ -182,13 +182,15 @@ Route::middleware(['role:superuser'])->group(function () {
 
         Route::get('/superuser/pengembalian', [PengembalianController::class, 'index'])->name('superuser.pengembalian'); 
         Route::post('/superuser/pengembalian', [PengembalianController::class, 'store']); 
-        Route::get('/superuser/pengembalian/pdf', function () {
+        Route::patch('/superuser/pengembalian/{id}', [PengembalianController::class, 'update']);
+        Route::delete('/superuser/pengembalian/{id}', [PengembalianController::class, 'destroy']);
+        
+        Route::get('/superuser/laporan-pengembalian', [PengembalianController::class, 'laporan'])->name('superuser.pengembalianlaporan');
+        Route::get('/superuser/laporan-pengembalian/pdf', function () {
             $pengembalian = pengembalian::all(); 
             $pdf = Pdf::loadView('SuperUser.Laporan_Pengembalian.pdf', compact('pengembalian'));
             return $pdf->download('pengembalian.pdf');
         });
-        Route::patch('/superuser/pengembalian/{id}', [PengembalianController::class, 'update']);
-        Route::delete('/superuser/pengembalian/{id}', [PengembalianController::class, 'destroy']);
 
         Route::get('/superuser/jurusan', [JurusanController::class, 'index'])->name('superuser.jurusan');
         Route::post('/superuser/jurusan', [JurusanController::class, 'store']);

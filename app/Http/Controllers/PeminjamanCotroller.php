@@ -113,14 +113,19 @@ class PeminjamanCotroller extends Controller
                 $peminjamanBarang->save(); // Save the borrowed item
             }
             DB::commit(); // Commit transaction
-            return response()->json([
-                'success' => true,
-                'message' => 'Peminjaman dan barang berhasil disimpan',
-                'data' => [
-                    'pb_id' => $peminjaman->pb_id,
-                    'barang' => $request->barang,
-                ]
-            ]);
+          $user = auth()->user();
+           if ($user->role == 'superuser') {
+        return redirect()->route('superuser.peminjaman')
+                ->with('success', 'Peminjaman Berhasil Ditambahkan');
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('admin.peminjaman')
+                ->with('success', 'Peminjaman Berhasil Ditambahkan');
+       } elseif($user->role=='user'){
+            return redirect()->route('user.peminjaman')
+                ->with('success', 'Peminjaman Berhasil Ditambahkan');
+       }else {
+            abort(403, 'Unauthorized action.');
+        }
         } catch (\Exception $e) {
             DB::rollBack(); // Rollback transaction on error
             Log::error($e->getMessage()); // Log the error for debugging
@@ -139,13 +144,13 @@ class PeminjamanCotroller extends Controller
     {
 
 {
-    $peminjaman = peminjaman::with('barang', 'siswa', 'pengguna', 'detail', 'asal_barang', 'jenis_barang')->get();
+    $peminjaman = peminjaman::with('barang', 'siswa', 'pengguna', 'asal_barang', 'jenis_barang')->get();
     $asal_barang = asal_barang::all();
-            $jenis_barang = jenis_barang::all();
+    $jenis_barang = jenis_barang::all();
     $user = auth()->user();
     $siswa = siswa::with('jurusanData', 'kelasData')->get(); // Fetch all siswa
     $pengguna = Pengguna::all(); // Fetch all pengguna
-    $barang = barang_inventaris::all(); // Fetch all barang
+    $barang = barang_inventaris::with('detail')->get(); // Fetch all barang
 
     if ($user->role == 'superuser') {
         return view('superuser/Peminjaman/index', compact('peminjaman', 'siswa', 'pengguna', 'barang'));

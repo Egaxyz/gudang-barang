@@ -216,7 +216,7 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="pengembalian" class="nav-link">
+                                    <a href="laporan-pengembalian" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Laporan Pengembalian</p>
                                     </a>

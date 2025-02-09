@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\peminjaman;
 use App\Models\pengembalian;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -17,7 +18,6 @@ class PengembalianController extends Controller
         // Validasi input
         $request->validate([
             'pb_id' => 'required',  // ID peminjaman
-            'user_id' => 'required'
         ]);
 
         \Log::info('Request data:', $request->all());
@@ -58,40 +58,82 @@ class PengembalianController extends Controller
     $pengembalian = new pengembalian();
     $pengembalian->kembali_id = $kembali_id_baru;
     $pengembalian->pb_id = $request->pb_id;
-    $pengembalian->user_id = $request->user_id;
+    $pengembalian->user_id = auth()->id();
     $pengembalian->kembali_tgl = $request->kembali_tgl;
     $pengembalian->kembali_sts = '1';
     $pengembalian->save();
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Barang berhasil dikembalikan.',
-            'data' => $pengembalian,
-        ]);
+   $user = auth()->user();
+           if ($user->role == 'superuser') {
+        return redirect()->route('superuser.pengembalian')
+                ->with('success', 'Pengembalian Berhasil Ditambahkan');
+        } elseif ($user->role == 'admin') {
+            return redirect()->route('admin.pengembalian')
+                ->with('success', 'Pengembalian Berhasil Ditambahkan');
+       } elseif($user->role=='user'){
+            return redirect()->route('user.pengembalian')
+                ->with('success', 'Pengembalian Berhasil Ditambahkan');
+       }else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 
     /**
      * Menampilkan daftar barang yang telah dikembalikan.
      */
-    public function index(Request $request)
-    {
-        $tahun = $request->input('tahun', Carbon::now()->format('Y'));
-        // Ambil data berdasarkan tahun dari kolom br_tgl_entry
-        $data['pengembalian'] = pengembalian::get();
-        $user = auth()->user();
+   public function index(Request $request)
+{
+    // Ambil semua data peminjaman
+    $peminjaman = peminjaman::all();
+    
+    // Ambil tahun dari request atau gunakan tahun saat ini
+    $tahun = $request->input('tahun', Carbon::now()->format('Y'));
+    
+    // Ambil data pengembalian
+    $data['pengembalian'] = pengembalian::all(); // Gunakan all() untuk mengambil semua data
+    
+    // Ambil user yang sedang login
+    $user = auth()->user();
 
-        if ($user->role == 'superuser') {
-            return view('superuser/Laporan_Pengembalian/index', $data
-, $data);
-        } elseif($user->role == 'user')  {
-            return view('user/Laporan_Pengembalian/index', $data
-, $data);
-        } else{
-            return view('admin/Laporan_Pengembalian/index', $data
-, $data);
-        }
+    // Siapkan data untuk dikirim ke view
+    $data['peminjaman'] = $peminjaman; // Tambahkan peminjaman ke data
+
+    // Kembalikan view berdasarkan role user
+    if ($user->role == 'superuser') {
+        return view('superuser.Pengembalian.index', $data);
+    } elseif ($user->role == 'user') {
+        return view('user.Pengembalian.index', $data);
+    } else {
+        return view('admin.Pengembalian.index', $data);
     }
+}
 
+   public function laporan(Request $request)
+{
+    // Ambil semua data peminjaman
+    $peminjaman = peminjaman::all();
+    
+    // Ambil tahun dari request atau gunakan tahun saat ini
+    $tahun = $request->input('tahun', Carbon::now()->format('Y'));
+    
+    // Ambil data pengembalian
+    $data['pengembalian'] = pengembalian::all(); // Gunakan all() untuk mengambil semua data
+    
+    // Ambil user yang sedang login
+    $user = auth()->user();
+
+    // Siapkan data untuk dikirim ke view
+    $data['peminjaman'] = $peminjaman; // Tambahkan peminjaman ke data
+
+    // Kembalikan view berdasarkan role user
+    if ($user->role == 'superuser') {
+        return view('superuser.Laporan_Pengembalian.index', $data);
+    } elseif ($user->role == 'user') {
+        return view('user.Laporan_Pengembalian.index', $data);
+    } else {
+        return view('admin.Laporan_Pengembalian.index', $data);
+    }
+}
     /**
      * Memperbarui data pengembalian barang.
      */
